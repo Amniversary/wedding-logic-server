@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"fmt"
 	"github.com/Amniversary/wedding-logic-server/config"
+	"log"
 )
 
 var db *gorm.DB
@@ -21,9 +22,10 @@ func openDb() {
 		config.DBName,
 	))
 	if err != nil {
-		fmt.Printf("init DateBase error: [%v]", err)
+		log.Printf("init DateBase error: [%v]", err)
+		return
 	}
-	db1.LogMode(true)
+	//db1.LogMode(true)
 	db = db1
 	//db.DB().SetMaxIdleConns(30)
 	//db.DB().SetMaxOpenConns(100)

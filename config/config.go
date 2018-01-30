@@ -20,8 +20,8 @@ type GetCardList struct {
 }
 
 const (
-	DBName = "wedding_card"
-	USER   = "hebihan"
-	PASS   = "tkC42cwy2U3SQwHw"
-	HOST   = "172.17.0.5"
+	DBName = "wedding_card" //wedding_card
+	USER   = "root" //hebihan
+	PASS   = "tkC42cwy2U3SQwHw"  //tkC42cwy2U3SQwHw
+	HOST   = "172.17.0.5" //172.17.0.5
 )
