@@ -16,11 +16,11 @@ func init() {
 }
 
 func Run() {
-	http.ListenAndServe(":8087", nil)
+	http.ListenAndServe(":5609", nil)
 }
 
 func RunRpc(w http.ResponseWriter, r *http.Request) {
-	res := &config.Response{Code: 0}
+	res := &config.Response{Code: config.RESPONSE_OK}
 	if r.Method != "POST" {
 		log.Printf("Method not be Post Request [%s]\n", r.Method)
 		EchoJson(w, http.StatusOK, res)
