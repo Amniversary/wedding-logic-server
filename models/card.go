@@ -6,8 +6,8 @@ import (
 )
 
 type Card struct {
-	ID           uint   `gorm:"primary_key" json:"id"`
-	UserId       int64  `gorm:"not null;default 0;type int" json:"userId"`
+	ID           uint64  `gorm:"primary_key" json:"id"`
+	UserId       int64  `gorm:"not null;default 0;type:int;index" json:"userId"`
 	Name         string `gorm:"not null;default:'';type:varchar(64)" json:"name"`
 	Phone        string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
 	Pic          string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
