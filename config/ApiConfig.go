@@ -10,10 +10,16 @@ const (
 )
 
 const (
-	RESPONSE_OK = 0
+	RESPONSE_OK    = 0
 	RESPONSE_ERROR = 1
 )
 
 const (
 	ERROR_MSG = "系统错误"
 )
+
+type ClickLick struct {
+	CardId int64 `json:"cardId"`
+	UserId int64 `json:"userId"`
+	Status int64 `json:"status"`
+}
