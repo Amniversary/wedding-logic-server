@@ -7,21 +7,23 @@ import (
 
 type Card struct {
 	ID           uint64  `gorm:"primary_key" json:"id"`
-	UserId       int64  `gorm:"not null;default 0;type:int;index" json:"userId"`
-	Name         string `gorm:"not null;default:'';type:varchar(64)" json:"name"`
-	Phone        string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
-	Pic          string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
-	Professional string `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
-	Year         string `gorm:"not null;default:'';type:varchar(64)" json:"year"`
-	Code         string `gorm:"not null;default:'';type:varchar(64)" json:"code"`
-	Company      string `gorm:"not null;default:'';type:varchar(128)" json:"company"`
-	Site         string `gorm:"not null;default:'';type:varchar(256)" json:"site"`
-	Accessment   string `gorm:"not null;type:text" json:"accessment"`
-	Fame         int64  `gorm:"not null;default:0;type:int" json:"fame"`
-	Lick         int64  `gorm:"not null;default:0;type:int" json:"lick"`
-	Collect      int64  `gorm:"not null;default:0;type:int" json:"collect"`
-	CreateAt     int64  `gorm:"not null;default:0;type:int" json:"create_at"`
-	UpdateAt     int64  `gorm:"not null;default:0;type:int" json:"update_at"`
+	UserId       int64   `gorm:"not null;default 0;type:int;index" json:"userId"`
+	Name         string  `gorm:"not null;default:'';type:varchar(64)" json:"name"`
+	Phone        string  `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
+	Pic          string  `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
+	Professional string  `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
+	Year         string  `gorm:"not null;default:'';type:varchar(64)" json:"year"`
+	Code         string  `gorm:"not null;default:'';type:varchar(64)" json:"code"`
+	Company      string  `gorm:"not null;default:'';type:varchar(128)" json:"company"`
+	Site         string  `gorm:"not null;default:'';type:varchar(256)" json:"site"`
+	Accessment   string  `gorm:"not null;type:text" json:"accessment"`
+	Fame         int64   `gorm:"not null;default:0;type:int" json:"fame"`
+	Lick         int64   `gorm:"not null;default:0;type:int" json:"lick"`
+	Collect      int64   `gorm:"not null;default:0;type:int" json:"collect"`
+	Longitude    float64 `gorm:"not null;default:0;type:decimal(10,2)" json:"longitude"`
+	Latitude     float64 `gorm:"not null;default:0;type:decimal(10,2)" json:"latitude"`
+	CreateAt     int64   `gorm:"not null;default:0;type:int" json:"create_at"`
+	UpdateAt     int64   `gorm:"not null;default:0;type:int" json:"update_at"`
 }
 
 type Collection struct {

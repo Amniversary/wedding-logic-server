@@ -47,7 +47,7 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		GetCardList(w,r)
 	default:
 		res.Code = 1
-		res.Msg = fmt.Sprintf("Can't find the interface: [%s]\n", methodName)
+		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)
 		EchoJson(w, http.StatusOK, res)
 	}
 }

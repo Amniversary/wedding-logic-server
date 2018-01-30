@@ -25,10 +25,13 @@ func openDb() {
 		log.Printf("init DateBase error: [%v]", err)
 		return
 	}
-	//db1.LogMode(true)
+	if config.DEBUG == "dev" {
+		db1.LogMode(true)
+	}
+
 	db = db1
-	//db.DB().SetMaxIdleConns(30)
-	//db.DB().SetMaxOpenConns(100)
+	db.DB().SetMaxIdleConns(20)
+	db.DB().SetMaxOpenConns(50)
 	initTable()
 }
 
