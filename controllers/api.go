@@ -40,13 +40,19 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 	}()
 	switch methodName {
 	case config.SET_CARD:
-		SetCard(w,r)
+		SetCard(w, r)
 	case config.GET_CARD_INFO:
-		GetCardInfo(w,r)
+		GetCardInfo(w, r)
 	case config.GET_CARD_LIST:
-		GetCardList(w,r)
+		GetCardList(w, r)
 	case config.CLICK_LICK:
-		ClickLick(w,r)
+		ClickLick(w, r)
+	case config.GET_VALIDATE_CODE:
+		GetValidateCode(w, r)
+	case config.NEW_DYNAMIC:
+		NewDynamic(w, r)
+	case config.MY_CARD_INFO:
+		MyCardInfo(w, r)
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)

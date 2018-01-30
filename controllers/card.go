@@ -29,7 +29,7 @@ func SetCard(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 获取名片信息
 func GetCardInfo(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -39,7 +39,7 @@ func GetCardInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	card, err := models.GetCardData(req.CardId, req.UserId)
-	if  err != nil {
+	if err != nil {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
@@ -49,7 +49,7 @@ func GetCardInfo(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 获取名片列表
 func GetCardList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -63,7 +63,7 @@ func GetCardList(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 名片点赞
 func ClickLick(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -78,4 +78,44 @@ func ClickLick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	Response.Code = config.RESPONSE_OK
+}
+
+//TODO: 获取短信验证码
+func GetValidateCode(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.ValidateCode{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("ValidateCode json decode err: %v", err)
+		return
+	}
+	url := "http://v.juhe.cn/sms/send?mobile=" + "&tpl_value" + "&key"
+	log.Printf("%s", url)
+}
+
+//TODO: 获取我的名片信息
+func MyCardInfo(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetCardInfo{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getCardInfo json decode err: %v\n", err)
+		return
+	}
+	card, err := models.GetUserCardInfo(req.UserId)
+	if err != nil {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = card
+	Response.Code = config.RESPONSE_OK
+}
+
+//TODO: 创建动态
+func NewDynamic(w http.ResponseWriter, r *http.Request) {
+
 }
