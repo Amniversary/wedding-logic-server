@@ -45,6 +45,8 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		GetCardInfo(w,r)
 	case config.GET_CARD_LIST:
 		GetCardList(w,r)
+	case config.CLICK_LICK:
+		ClickLick(w,r)
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)

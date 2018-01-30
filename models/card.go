@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 	"log"
+	"github.com/Amniversary/wedding-logic-server/config"
+	"github.com/jinzhu/gorm"
 )
 
 type Card struct {
@@ -20,10 +22,10 @@ type Card struct {
 	Fame         int64   `gorm:"not null;default:0;type:int" json:"fame"`
 	Lick         int64   `gorm:"not null;default:0;type:int" json:"lick"`
 	Collect      int64   `gorm:"not null;default:0;type:int" json:"collect"`
-	Longitude    float64 `gorm:"not null;default:0;type:decimal(10,2)" json:"longitude"`
-	Latitude     float64 `gorm:"not null;default:0;type:decimal(10,2)" json:"latitude"`
-	CreateAt     int64   `gorm:"not null;default:0;type:int" json:"create_at"`
-	UpdateAt     int64   `gorm:"not null;default:0;type:int" json:"update_at"`
+	Longitude    float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"longitude"`
+	Latitude     float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"latitude"`
+	CreateAt     int64   `gorm:"not null;default:0;type:int" json:"-"`
+	UpdateAt     int64   `gorm:"not null;default:0;type:int" json:"-"`
 }
 
 type Collection struct {
@@ -31,6 +33,8 @@ type Collection struct {
 	UserId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"userId"`
 	CardId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"cardId"`
 	Status   int64 `gorm:"not null;default:1;type:int" json:"status"`
+	IsLick   int64 `gorm:"not null;default:0;type:int" json:"is_lick"`
+	IsFame   int64 `gorm:"not null;default:1;type:int" json:"is_fame"`
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 	UpdateAt int64 `gorm:"not null;default:0;type:int" json:"update_at"`
 }
@@ -58,8 +62,10 @@ func GetCardData(cardId int64, userId int64) (Card, error) {
 	if err != nil {
 		return info, err
 	}
-	if _, err := CreateCollect(cardId, userId); err != nil {
-		return info, err
+	if info.UserId != userId {
+		if _, err := CreateCollect(cardId, userId); err != nil {
+			return info, err
+		}
 	}
 	return info, nil
 }
@@ -86,6 +92,39 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 			log.Printf("create collection error: %v", err)
 			return collect, err
 		}
+		if err := db.Model(&Card{}).Update("fame", gorm.Expr("fame + 1")).Where("card_id = ?", cardId).Error; err != nil {
+			log.Printf("update card fame error: %v ,  cardId:[%d]", err, cardId)
+		}
 	}
 	return collect, nil
+}
+
+func SetClickLick(req *config.ClickLick) (bool, error) {
+	collection := Collection{}
+	if err := db.Where("user_id = ? and card_id = ?", req.UserId, req.CardId).First(&collection).Error; err != nil {
+		return false, err
+	}
+	if req.Status == 2 {
+		req.Status = 0
+	}
+	if collection.IsLick == req.Status {
+		return true, nil
+	}
+	tx := db.Begin()
+
+	err := tx.Model(&Collection{}).Where("user_id = ? and card_id = ?", req.UserId, req.CardId).Update("is_lick", req.Status).Error;
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+	switch req.Status {
+	case 0: err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick - ?", 1)).Error
+	case 1: err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+	}
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+	tx.Commit()
+	return true, nil
 }

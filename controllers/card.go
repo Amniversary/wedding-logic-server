@@ -60,3 +60,22 @@ func GetCardList(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+//TODO: 名片点赞
+func ClickLick(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.ClickLick{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("ClickLick json decode err: %v", err)
+		return
+	}
+	if ok, err := models.SetClickLick(req); !ok {
+		log.Printf("setClickLick error: %v", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
