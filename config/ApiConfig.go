@@ -17,7 +17,7 @@ const (
 
 //TODO: 短信模板 Code
 const (
-	SMS_CODE = 62560
+	SMS_CODE = "62560"
 )
 
 const (
@@ -34,4 +34,9 @@ type ValidateCode struct {
 	UserId int64  `json:"userId"`
 	Phone  string `json:"phone"`
 	Type   int64  `json:"type"`
+}
+
+type SmsCallBack struct {
+	ErrorCode int64  `json:"error_code"`
+	Reason    string `json:"reason"`
 }

@@ -39,6 +39,24 @@ type Collection struct {
 	UpdateAt int64 `gorm:"not null;default:0;type:int" json:"update_at"`
 }
 
+type SmsMessage struct {
+	ID       int64  `gorm:"primary_key" json:"id"`
+	UserId   int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Phone 	 string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
+	Count    int64  `gorm:"not null;default:0;type:int" json:"count"`
+	Fee      int64  `gorm:"not null;default:0;type:int" json:"fee"`
+	Type     int64  `gorm:"not null;default:0;type:int" json:"type"`
+	Code     string `gorm:"not null;default:'';type:varchar(64)" json:"code"`
+	Sid      string `gorm:"not null;default:'';type:varchar(256)" json:"sid"`
+	Text     string `gorm:"not null;default:'';type:varchar(256)" json:"text"`
+	Status   int64  `gorm:"not null;default:0;type:int;index" json:"status"`
+	CreateAt int64  `gorm:"not null;default:0;type:int;" json:"create_at"`
+}
+
+func (SmsMessage) TableName() string {
+	return "cSmsMessage"
+}
+
 func (Card) TableName() string {
 	return "cCard"
 }
@@ -120,15 +138,16 @@ func SetClickLick(req *config.ClickLick) (bool, error) {
 		return true, nil
 	}
 	tx := db.Begin()
-
 	err := tx.Model(&Collection{}).Where("user_id = ? and card_id = ?", req.UserId, req.CardId).Update("is_lick", req.Status).Error;
 	if err != nil {
 		tx.Rollback()
 		return false, err
 	}
 	switch req.Status {
-	case 0: err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick - ?", 1)).Error
-	case 1: err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+	case 0:
+		err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick - ?", 1)).Error
+	case 1:
+		err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick + ?", 1)).Error
 	}
 	if err != nil {
 		tx.Rollback()
@@ -136,4 +155,24 @@ func SetClickLick(req *config.ClickLick) (bool, error) {
 	}
 	tx.Commit()
 	return true, nil
+}
+
+func CreateSMS(req *config.ValidateCode, vCode string) (SmsMessage, bool) {
+	sms := SmsMessage{UserId: req.UserId, Phone: req.Phone, Type: req.Type, Code: vCode}
+	sms.CreateAt = time.Now().Unix()
+	if err := db.Create(&sms).Error; err != nil {
+		log.Printf("create sms message err: %s", err)
+		return sms, false
+	}
+	return sms,true
+}
+
+func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
+	net := netReturn["result"].(map[string]interface{})
+	err := db.Model(&sms).Where("id = ?", sms.ID).Updates(map[string]interface{}{"count":net["count"], "fee":net["fee"], "sid":net["sid"], "text":netReturn["reason"], "status":1}).Error
+	if err != nil {
+		log.Printf("update sms message err : %v", err)
+		return false
+	}
+	return true
 }
