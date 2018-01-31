@@ -13,7 +13,7 @@ type CardDynamic struct {
 	Content  string `gorm:"not null;type:text" json:"content"`
 	Pic      string `gorm:"not null;type:text" json:"pic"`
 	Lick     int64  `gorm:"not null;default:0;type:int" json:"lick"`
-	Status   int64  `gorm:"not null;default:1;type:int" json:"-"`
+	Status   int64  `gorm:"not null;default:1;type:int;index" json:"-"`
 	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
@@ -49,4 +49,20 @@ func CreateDynamic(req *config.NewDynamic) bool {
 		return false
 	}
 	return true
+}
+
+func GetDynamicList(req *config.GetDynamicList) ([]config.DynamicList, bool) {
+	var list []config.DynamicList
+	err := db.Table("cCardDynamic cd").
+		Select("cd.id, content, pic, lick, create_at, ifnull(cc.status, 0) as is_click").
+		Joins("left join cClickDynamic cc on cd.id=cc.dynamic_id and user_id = ?", req.UserId).
+		Where("cd.card_id = ? and cd.status = 1", req.CardId).
+		Offset((req.PageNo - 1) * req.PageSize).
+		Limit(req.PageSize).
+		Order("cd.create_at desc").Find(&list).Error
+	if err != nil {
+		log.Printf("select [GetDynamicList] err: %v", err)
+		return nil, false
+	}
+	return list, true
 }

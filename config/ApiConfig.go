@@ -9,6 +9,7 @@ const (
 	CLICK_LICK          = "clickLick"         //TODO: 名片点赞
 	MY_CARD_INFO        = "myCardInfo"        //TODO: 我的名片
 	CHECK_VALIDATE_CODE = "checkValidateCode" //TODO: 验证 手机验证码
+	GET_DYNAMIC_LIST    = "getDynamicList"    //TODO: 获取动态列表
 )
 
 const (
@@ -63,4 +64,20 @@ type NewDynamic struct {
 	CardId  int64    `json:"cardId"`
 	Content string   `json:"content"`
 	Pic     []string `json:"pic"`
+}
+
+type GetDynamicList struct {
+	CardId   int64 `json:"cardId"`
+	UserId   int64 `json:"userId"`
+	PageNo   int64 `json:"pageNo"`
+	PageSize int64 `json:"pageSize"`
+}
+
+type DynamicList struct {
+	ID       int64  `json:"id"`
+	Content  string `json:"content"`
+	Pic      string `json:"pic"`
+	Lick     int64  `json:"lick"`
+	IsClick  int64  `json:"is_click"`
+	CreateAt int64  `json:"create_at"`
 }

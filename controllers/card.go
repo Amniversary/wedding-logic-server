@@ -141,6 +141,25 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+func GetDynamicList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetDynamicList{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getDynamicList json decode err : %v", err)
+		return
+	}
+	list, ok := models.GetDynamicList(req)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
+
 //TODO: 创建动态
 func NewDynamic(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code:config.RESPONSE_ERROR}
