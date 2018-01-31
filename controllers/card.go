@@ -134,7 +134,8 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	card, err := models.GetUserCardInfo(req.UserId)
 	if err != nil {
-		Response.Msg = config.ERROR_MSG
+		Response.Code = config.RESPONSE_OK
+		Response.Data = card
 		return
 	}
 	Response.Data = card

@@ -103,11 +103,11 @@ func GetCardList(req *config.GetCardList) ([]config.UserCardList, bool) {
 	return list, true
 }
 
-func GetUserCardInfo(userId int64) (Card, error) {
-	card := Card{}
+func GetUserCardInfo(userId int64) ([]Card, error) {
+	var card []Card
 	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
-		return card, err
+		return nil, err
 	}
 	return card, nil
 }
