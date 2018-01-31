@@ -41,7 +41,7 @@ type Collection struct {
 type SmsMessage struct {
 	ID       int64  `gorm:"primary_key" json:"id"`
 	UserId   int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
-	Phone 	 string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
+	Phone    string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
 	Count    int64  `gorm:"not null;default:0;type:int" json:"count"`
 	Fee      int64  `gorm:"not null;default:0;type:int" json:"fee"`
 	Type     int64  `gorm:"not null;default:0;type:int" json:"type"`
@@ -72,6 +72,14 @@ func CreateCardModel(card *Card) error {
 		return err
 	}
 	return nil
+}
+
+func UpdateCardModel(card *Card) bool {
+	if err := db.Table("cCard").Where("id = ? and user_id = ?", card.ID, card.UserId).Update(&card).Error; err != nil {
+		log.Printf("update card err : %v, [%v]", err, card)
+		return false
+	}
+	return true
 }
 
 func GetCardData(cardId int64, userId int64) (Card, error) {
@@ -175,12 +183,12 @@ func CreateSMS(req *config.ValidateCode, vCode string) (SmsMessage, bool) {
 		log.Printf("create sms message err: %s", err)
 		return sms, false
 	}
-	return sms,true
+	return sms, true
 }
 
 func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 	net := netReturn["result"].(map[string]interface{})
-	err := db.Model(&sms).Where("id = ?", sms.ID).Updates(map[string]interface{}{"count":net["count"], "fee":net["fee"], "sid":net["sid"], "text":netReturn["reason"], "status":1}).Error
+	err := db.Model(&sms).Where("id = ?", sms.ID).Updates(map[string]interface{}{"count": net["count"], "fee": net["fee"], "sid": net["sid"], "text": netReturn["reason"], "status": 1}).Error
 	if err != nil {
 		log.Printf("update sms message err : %v", err)
 		return false

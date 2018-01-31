@@ -2,6 +2,7 @@ package config
 
 const (
 	SET_CARD            = "setCard"           //TODO: 设置名片
+	UP_CARD             = "upCard"            //TODO: 更新名片
 	GET_VALIDATE_CODE   = "getValidateCode"   //TODO: 获取验证码
 	GET_CARD_INFO       = "getCardInfo"       //TODO: 获取名片详情
 	GET_CARD_LIST       = "getCardList"       //TODO: 获取名片列表
@@ -11,6 +12,7 @@ const (
 	CHECK_VALIDATE_CODE = "checkValidateCode" //TODO: 验证 手机验证码
 	GET_DYNAMIC_LIST    = "getDynamicList"    //TODO: 获取动态列表
 	CLICK_LICK_DYNAMIC  = "clickLickDynamic"  //TODO: 动态点赞
+
 )
 
 const (

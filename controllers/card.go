@@ -32,6 +32,24 @@ func SetCard(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+//TODO: 更新名片
+func UpCard(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	card := &models.Card{}
+	if err := json.NewDecoder(r.Body).Decode(card); err != nil {
+		log.Printf("upCard json decode err: %v", err)
+		return
+	}
+	if ok := models.UpdateCardModel(card); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+
 //TODO: 获取名片信息
 func GetCardInfo(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code: config.RESPONSE_ERROR}
