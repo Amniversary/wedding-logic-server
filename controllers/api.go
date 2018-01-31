@@ -53,6 +53,9 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		NewDynamic(w, r)
 	case config.MY_CARD_INFO:
 		MyCardInfo(w, r)
+	case config.CHECK_VALIDATE_CODE:
+		CheckValidateCode(w, r)
+
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)

@@ -141,8 +141,32 @@ func NewDynamic(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func RandNumber() {
-
+//TODO: 校验验证码
+func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.CheckValidateCode{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("checkValidateCode json decode err : %v", err)
+		return
+	}
+	res, err := models.GetUserCode(req.UserId)
+	if err != nil {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	t := time.Now().Unix()
+	if (t - res.CreateAt) > 60 {
+		Response.Msg = "验证码已过期, 请重新获取 !"
+		return
+	}
+	if res.Code != req.Code {
+		Response.Msg = "验证码错误 !"
+		return
+	}
+	Response.Code = config.RESPONSE_OK
 }
 
 func SendJuHeSMS(phone string, tpId string, vCode string) (map[string]interface{}, bool) {
@@ -169,18 +193,20 @@ func SendJuHeSMS(phone string, tpId string, vCode string) (map[string]interface{
 	return nil, false
 }
 
+
+
 func Get(apiURL string, params url.Values) (rs []byte, err error) {
 	var Url *url.URL
 	Url, err = url.Parse(apiURL)
 	if err != nil {
-		fmt.Printf("解析url错误:\r\n%v", err)
+		log.Printf("parse url err: %v", err)
 		return nil, err
 	}
 	//如果参数中有中文参数,这个方法会进行URLEncode
 	Url.RawQuery = params.Encode()
 	resp, err := http.Get(Url.String())
 	if err != nil {
-		fmt.Println("err:", err)
+		log.Printf("get request err: %v", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
