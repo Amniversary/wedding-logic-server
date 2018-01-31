@@ -186,7 +186,7 @@ func NewDynamic(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
-	req := &config.NewDynamic{}
+	req := &models.CardDynamic{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("NewDynamic json decode err : %v", err)
 		return

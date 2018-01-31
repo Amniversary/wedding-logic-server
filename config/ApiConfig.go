@@ -70,9 +70,9 @@ type UserCardList struct {
 }
 
 type NewDynamic struct {
-	CardId  int64    `json:"cardId"`
-	Content string   `json:"content"`
-	Pic     []string `json:"pic"`
+	CardId  int64  `json:"cardId"`
+	Content string `json:"content"`
+	Pic     string `json:"pic"`
 }
 
 type GetDynamicList struct {

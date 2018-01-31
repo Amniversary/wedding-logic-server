@@ -33,19 +33,14 @@ func (ClickDynamic) TableName() string {
 	return "cClickDynamic"
 }
 
-func CreateDynamic(req *config.NewDynamic) bool {
-	dynamic := CardDynamic{CardId: req.CardId, Content: req.Content}
-	dynamic.CreateAt = time.Now().Unix()
-	pic, err := json.Marshal(req.Pic)
-	if err != nil {
-		log.Printf("dynamic pic json encode err :%v", err)
-		return false
-	}
-	dynamic.Pic = string(pic)
-	if string(pic) == "null" {
-		dynamic.Pic = ""
-	}
-	if err := db.Create(&dynamic).Error; err != nil {
+func CreateDynamic(req *CardDynamic) bool {
+	req.CreateAt = time.Now().Unix()
+	//pic, err := json.Marshal(req.Pic)
+	//if err != nil {
+	//	log.Printf("dynamic pic json encode err :%v", err)
+	//	return false
+	//}
+	if err := db.Create(&req).Error; err != nil {
 		log.Printf("create dynamic model err : %v", err)
 		return false
 	}
