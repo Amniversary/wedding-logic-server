@@ -16,7 +16,9 @@ type GetCardInfo struct {
 }
 
 type GetCardList struct {
-	UserId int64 `json:"userId"`
+	UserId   int64 `json:"userId"`
+	PageNo   int64 `json:"pageNo"`
+	PageSize int64 `json:"pageSize"`
 }
 
 const (
