@@ -142,6 +142,7 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+//TODO: 获取动态列表
 func GetDynamicList(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code:config.RESPONSE_ERROR}
 	defer func() {
@@ -202,6 +203,24 @@ func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	}
 	if res.Code != req.Code {
 		Response.Msg = "验证码错误 !"
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+
+func ClickLickDynamic(w http.ResponseWriter, r *http.Request)  {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.DynamicClick{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("ClickLickDynamic json docode err: %v", err)
+		return
+	}
+	if ok, err := models.SetDynamicClickLick(req); !ok {
+		log.Printf("setClickLick error: %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	Response.Code = config.RESPONSE_OK

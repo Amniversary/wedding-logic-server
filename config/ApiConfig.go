@@ -10,6 +10,7 @@ const (
 	MY_CARD_INFO        = "myCardInfo"        //TODO: 我的名片
 	CHECK_VALIDATE_CODE = "checkValidateCode" //TODO: 验证 手机验证码
 	GET_DYNAMIC_LIST    = "getDynamicList"    //TODO: 获取动态列表
+	CLICK_LICK_DYNAMIC  = "clickLickDynamic"  //TODO: 动态点赞
 )
 
 const (
@@ -30,6 +31,12 @@ type ClickLick struct {
 	CardId int64 `json:"cardId"`
 	UserId int64 `json:"userId"`
 	Status int64 `json:"status"`
+}
+
+type DynamicClick struct {
+	UserId    int64 `json:"userId"`
+	DynamicId int64 `json:"dynamicId"`
+	Status    int64 `json:"status"`
 }
 
 type ValidateCode struct {

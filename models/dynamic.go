@@ -5,6 +5,7 @@ import (
 	"log"
 	"encoding/json"
 	"github.com/Amniversary/wedding-logic-server/config"
+	"github.com/jinzhu/gorm"
 )
 
 type CardDynamic struct {
@@ -33,7 +34,7 @@ func (ClickDynamic) TableName() string {
 }
 
 func CreateDynamic(req *config.NewDynamic) bool {
-	dynamic := CardDynamic{CardId:req.CardId, Content:req.Content}
+	dynamic := CardDynamic{CardId: req.CardId, Content: req.Content}
 	dynamic.CreateAt = time.Now().Unix()
 	pic, err := json.Marshal(req.Pic)
 	if err != nil {
@@ -65,4 +66,49 @@ func GetDynamicList(req *config.GetDynamicList) ([]config.DynamicList, bool) {
 		return nil, false
 	}
 	return list, true
+}
+
+func SetDynamicClickLick(req *config.DynamicClick) (bool, error) {
+	dynamic := ClickDynamic{}
+	if err := db.Where("user_id = ? and dynamic_id = ?", req.UserId, req.DynamicId).First(&dynamic).Error; err != nil {
+		tx := db.Begin()
+		newDynamic := ClickDynamic{UserId: req.UserId, DynamicId: req.DynamicId, Status: 1}
+		if err := db.Create(&newDynamic).Error; err != nil {
+			log.Printf("create click dynamic err: %v", err)
+			tx.Rollback()
+			return false, err
+		}
+		err := db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+		if err != nil {
+			log.Printf("update card dynamic lick err : %v, [DynamicId: %d]", err, req.DynamicId)
+			tx.Rollback()
+			return false, err
+		}
+		tx.Commit()
+		return true, nil
+	}
+	if req.Status == 2 {
+		req.Status = 0
+	}
+	if dynamic.Status == req.Status {
+		return true, nil
+	}
+	tx := db.Begin()
+	if err := db.Model(&dynamic).Update("status", req.Status).Error; err != nil {
+		log.Printf("update click dynamic err : %v, [dynamicId: %d, status:%d]", err, req.DynamicId, req.Status)
+		tx.Rollback()
+		return false, err
+	}
+	var err error
+	switch req.Status {
+	case 0: err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick - ?", 1)).Error
+	case 1: err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+	}
+	if err != nil {
+		log.Printf("update card dynamic lick err : %v, [dynamicId:%d]", err, req.DynamicId)
+		tx.Rollback()
+		return false, err
+	}
+	tx.Commit()
+	return true, nil
 }
