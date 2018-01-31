@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 	"log"
-	"encoding/json"
 	"github.com/Amniversary/wedding-logic-server/config"
 	"github.com/jinzhu/gorm"
 )
