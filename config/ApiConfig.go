@@ -54,7 +54,13 @@ type UserCardList struct {
 	Pic          string `json:"pic"`
 	Professional string `json:"professional"`
 	Year         string `json:"year"`
-	Fame         int64 `json:"fame"`
-	Lick         int64 `json:"lick"`
+	Fame         int64  `json:"fame"`
+	Lick         int64  `json:"lick"`
 	IsClick      int64  `json:"is_click"`
+}
+
+type NewDynamic struct {
+	CardId  int64    `json:"cardId"`
+	Content string   `json:"content"`
+	Pic     []string `json:"pic"`
 }

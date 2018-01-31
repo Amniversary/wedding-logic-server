@@ -143,7 +143,20 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 创建动态
 func NewDynamic(w http.ResponseWriter, r *http.Request) {
-
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.NewDynamic{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("NewDynamic json decode err : %v", err)
+		return
+	}
+	if ok := models.CreateDynamic(req); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
 }
 
 //TODO: 校验验证码
@@ -174,6 +187,7 @@ func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+//TODO: 发送聚合短信
 func SendJuHeSMS(phone string, tpId string, vCode string) (map[string]interface{}, bool) {
 	key := "6962e47932431e9608350c1d5bfb523c"
 	juheURL := "http://v.juhe.cn/sms/send"

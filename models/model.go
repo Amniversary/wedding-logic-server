@@ -36,5 +36,5 @@ func openDb() {
 }
 
 func initTable() {
-	db.AutoMigrate(new(Card), new(Collection), new(SmsMessage))
+	db.AutoMigrate(new(Card), new(Collection), new(SmsMessage), new(CardDynamic), new(ClickDynamic))
 }
