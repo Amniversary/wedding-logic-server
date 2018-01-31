@@ -43,6 +43,18 @@ type SmsCallBack struct {
 }
 
 type CheckValidateCode struct {
-	UserId int64 `json:"userId"`
-	Code	string `json:"code"`
+	UserId int64  `json:"userId"`
+	Code   string `json:"code"`
+}
+
+type UserCardList struct {
+	Id           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
+	Name         string `json:"name"`
+	Pic          string `json:"pic"`
+	Professional string `json:"professional"`
+	Year         string `json:"year"`
+	Fame         string `json:"fame"`
+	Lick         string `json:"lick"`
+	IsClick      int64  `json:"is_click"`
 }

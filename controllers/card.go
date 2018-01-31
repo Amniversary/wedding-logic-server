@@ -63,7 +63,12 @@ func GetCardList(w http.ResponseWriter, r *http.Request) {
 		log.Printf("getCardList json decode err: %v\n", err)
 		return
 	}
-
+	cardList, ok := models.GetCardList(req)
+	if !ok {
+		return
+	}
+	Response.Data = cardList
+	Response.Code = config.RESPONSE_OK
 }
 
 //TODO: 名片点赞

@@ -87,8 +87,20 @@ func GetCardData(cardId int64, userId int64) (Card, error) {
 	return info, nil
 }
 
-func GetCardList() {
-
+func GetCardList(req *config.GetCardList) ([]config.UserCardList, bool) {
+	var list []config.UserCardList
+	err := db.Table("cCollection cc").
+		Select("cc.id, cr.user_id, name, pic, professional,year,fame, lick, is_lick").
+		Joins("inner join cCard cr on cc.card_id = cr.id").
+		Where("cc.user_id = ?", req.UserId).
+		Offset((req.PageNo - 1) * req.PageSize).
+		Limit(req.PageSize).
+		Order("cc.create_at desc").Find(&list).Error
+	if err != nil {
+		log.Printf("select [GetCardList] err: %v", err)
+		return nil, false
+	}
+	return list, true
 }
 
 func GetUserCardInfo(userId int64) (Card, error) {
