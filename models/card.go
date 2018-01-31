@@ -15,7 +15,6 @@ type Card struct {
 	Pic          string  `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
 	Professional string  `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
 	Year         string  `gorm:"not null;default:'';type:varchar(64)" json:"year"`
-	Code         string  `gorm:"not null;default:'';type:varchar(64)" json:"code"`
 	Company      string  `gorm:"not null;default:'';type:varchar(128)" json:"company"`
 	Site         string  `gorm:"not null;default:'';type:varchar(256)" json:"site"`
 	Accessment   string  `gorm:"not null;type:text" json:"accessment"`
