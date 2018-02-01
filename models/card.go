@@ -122,7 +122,7 @@ func GetUserCardInfo(userId int64) ([]Card, error) {
 func GetCardInfo(cardId int64, userId int64) (config.UserCardInfo, error) {
 	card := config.UserCardInfo{}
 	if err := db.Table("cCard cc").
-		Select("cc.id, cc.user_id, name, phone, pic, professional, year, company, site, accessment, longitude, latitude, fame, lick, ifnull(cn.is_lick,0) as is_lick").
+		Select("cc.id, cc.user_id, name, phone, pic, professional, year, company, site, accessment, longitude, latitude, fame, lick").
 		Joins("left join cCollection cn on cc.id=cn.card_id and cn.user_id = ?", userId).
 		Where("cc.id = ?", cardId).Limit(1).
 		Find(&card).Error; err != nil {
