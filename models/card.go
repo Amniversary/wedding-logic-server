@@ -156,9 +156,6 @@ func SetClickLick(req *config.ClickLick) (bool, error) {
 	if req.Status == 2 {
 		req.Status = 0
 	}
-	if collection.IsLick == req.Status {
-		return true, nil
-	}
 	tx := db.Begin()
 	err := tx.Model(&Collection{}).Where("user_id = ? and card_id = ?", req.UserId, req.CardId).Update("is_lick", req.Status).Error;
 	if err != nil {
