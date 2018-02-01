@@ -82,8 +82,8 @@ func UpdateCardModel(card *Card) bool {
 	return true
 }
 
-func GetCardData(cardId int64, userId int64) (Card, error) {
-	info, err := GetCardInfo(cardId)
+func GetCardData(cardId int64, userId int64) (config.UserCardInfo, error) {
+	info, err := GetCardInfo(cardId, userId)
 	if err != nil {
 		return info, err
 	}
@@ -120,9 +120,13 @@ func GetUserCardInfo(userId int64) ([]Card, error) {
 	return card, nil
 }
 
-func GetCardInfo(cardId int64) (Card, error) {
-	card := Card{}
-	if err := db.Where("id = ?", cardId).First(&card).Error; err != nil {
+func GetCardInfo(cardId int64, userId int64) (config.UserCardInfo, error) {
+	card := config.UserCardInfo{}
+	if err := db.Table("cCard cc").
+		Select("cc.id, cc.user_id, name, phone, pic, professional, year, company, site, accessment, fame, lick, ifnull(cn.is_lick,0) as is_lick").
+		Joins("left join cCollection cn on cc.id=cn.card_id and cn.user_id = ?", userId).
+		Where("cc.id = ?", cardId).Limit(1).
+		Find(&card).Error; err != nil {
 		log.Printf("select [GetCardInfo] err: %v", err)
 		return card, err
 	}

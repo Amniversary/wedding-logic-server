@@ -69,6 +69,22 @@ type UserCardList struct {
 	IsClick      int64  `json:"is_click"`
 }
 
+type UserCardInfo struct {
+	ID           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
+	Name         string `json:"name"`
+	Pic          string `json:"pic"`
+	Phone        string `json:"phone"`
+	Professional string `json:"professional"`
+	Year         string `json:"year"`
+	Company      string `json:"company"`
+	Site         string `json:"site"`
+	Accessment   string `json:"accessment"`
+	Fame         int64  `json:"fame"`
+	Lick         int64  `json:"lick"`
+	IsLick       int64  `json:"is_lick"`
+}
+
 type NewDynamic struct {
 	CardId  int64  `json:"cardId"`
 	Content string `json:"content"`
