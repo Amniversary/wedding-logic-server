@@ -32,7 +32,6 @@ type Collection struct {
 	UserId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"userId"`
 	CardId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"cardId"`
 	Status   int64 `gorm:"not null;default:1;type:int" json:"status"`
-	IsLick   int64 `gorm:"not null;default:0;type:int" json:"is_lick"`
 	IsFame   int64 `gorm:"not null;default:1;type:int" json:"is_fame"`
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 	UpdateAt int64 `gorm:"not null;default:0;type:int" json:"update_at"`
@@ -150,16 +149,6 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 }
 
 func SetClickLick(req *config.ClickLick) (bool, error) {
-	collection := Collection{}
-	if err := db.Where("user_id = ? and card_id = ?", req.UserId, req.CardId).First(&collection).Error; err != nil {
-		return false, err
-	}
-	if req.Status == 2 {
-		req.Status = 0
-	}
-	if collection.IsLick == req.Status {
-		return true, nil
-	}
 	tx := db.Begin()
 	err := tx.Model(&Collection{}).Where("user_id = ? and card_id = ?", req.UserId, req.CardId).Update("is_lick", req.Status).Error;
 	if err != nil {

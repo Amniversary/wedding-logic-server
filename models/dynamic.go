@@ -78,6 +78,12 @@ func SetDynamicClickLick(req *config.DynamicClick) (bool, error) {
 			tx.Rollback()
 			return false, err
 		}
+		err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+		if err != nil {
+			log.Printf("update card lick err: %v, [CardId:%d]", err, req.CardId)
+			tx.Rollback()
+			return false, err
+		}
 		tx.Commit()
 		return true, nil
 	}
@@ -95,8 +101,20 @@ func SetDynamicClickLick(req *config.DynamicClick) (bool, error) {
 	}
 	var err error
 	switch req.Status {
-	case 0: err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick - ?", 1)).Error
-	case 1: err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick + ?", 1)).Error
+	case 0:
+		if err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick - ?", 1)).Error; err != nil {
+			log.Printf("update card lick err : %v, [CardId:%d]", err, req.CardId)
+			tx.Rollback()
+			return false, err
+		}
+		err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick - ?", 1)).Error
+	case 1:
+		if err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("lick", gorm.Expr("lick + ?", 1)).Error; err != nil {
+			log.Printf("update card lick err : %v, [CardId:%d]", err, req.CardId)
+			tx.Rollback()
+			return false, err
+		}
+		err = db.Model(&CardDynamic{}).Where("id = ?", req.DynamicId).Update("lick", gorm.Expr("lick + ?", 1)).Error
 	}
 	if err != nil {
 		log.Printf("update card dynamic lick err : %v, [dynamicId:%d]", err, req.DynamicId)

@@ -226,6 +226,7 @@ func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+//TODO: 动态点赞
 func ClickLickDynamic(w http.ResponseWriter, r *http.Request)  {
 	Response := &config.Response{Code:config.RESPONSE_ERROR}
 	defer func() {

@@ -41,6 +41,7 @@ type ClickLick struct {
 
 type DynamicClick struct {
 	UserId    int64 `json:"userId"`
+	CardId    int64 `json:"cardId"`
 	DynamicId int64 `json:"dynamicId"`
 	Status    int64 `json:"status"`
 }
