@@ -61,7 +61,8 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		GetDynamicList(w, r)
 	case config.CLICK_LICK_DYNAMIC:
 		ClickLickDynamic(w, r)
-
+	case config.GET_SYSTEM_PARAMS:
+		GetSystemParams(w, r)
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)

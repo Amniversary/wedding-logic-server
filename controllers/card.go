@@ -244,6 +244,22 @@ func ClickLickDynamic(w http.ResponseWriter, r *http.Request)  {
 	Response.Code = config.RESPONSE_OK
 }
 
+func GetSystemParams(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := config.SystemParams{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("GetSystemParams json decode err: %v", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	req.CreateQrCode = 1
+	Response.Data = req
+	Response.Code = config.RESPONSE_OK
+}
+
 //TODO: 发送聚合短信
 func SendJuHeSMS(phone string, tpId string, vCode string) (map[string]interface{}, bool) {
 	key := "6962e47932431e9608350c1d5bfb523c"

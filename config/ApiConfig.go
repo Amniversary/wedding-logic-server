@@ -12,7 +12,7 @@ const (
 	CHECK_VALIDATE_CODE = "checkValidateCode" //TODO: 验证 手机验证码
 	GET_DYNAMIC_LIST    = "getDynamicList"    //TODO: 获取动态列表
 	CLICK_LICK_DYNAMIC  = "clickLickDynamic"  //TODO: 动态点赞
-
+	GET_SYSTEM_PARAMS   = "getSystemParams"   //TODO: 获取系统参数
 )
 
 const (
@@ -28,6 +28,10 @@ const (
 const (
 	ERROR_MSG = "系统错误"
 )
+
+type SystemParams struct {
+	CreateQrCode int64 `json:"create_qrcode"`
+}
 
 type ClickLick struct {
 	CardId int64 `json:"cardId"`
