@@ -32,7 +32,6 @@ type Collection struct {
 	UserId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"userId"`
 	CardId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"cardId"`
 	Status   int64 `gorm:"not null;default:1;type:int" json:"status"`
-	IsLick   int64 `gorm:"not null;default:0;type:int" json:"is_lick"`
 	IsFame   int64 `gorm:"not null;default:1;type:int" json:"is_fame"`
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 	UpdateAt int64 `gorm:"not null;default:0;type:int" json:"update_at"`
