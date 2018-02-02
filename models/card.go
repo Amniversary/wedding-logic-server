@@ -186,6 +186,8 @@ func CreateSMS(req *config.ValidateCode, vCode string) (SmsMessage, bool) {
 	return sms, true
 }
 
+
+
 func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 	net := netReturn["result"].(map[string]interface{})
 	err := db.Model(&sms).Where("id = ?", sms.ID).Updates(map[string]interface{}{"count": net["count"], "fee": net["fee"], "sid": net["sid"], "text": netReturn["reason"], "status": 1}).Error

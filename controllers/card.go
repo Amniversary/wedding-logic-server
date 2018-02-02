@@ -89,6 +89,23 @@ func GetCardList(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+func DelDynamic(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.DelDynamic{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("DelDynamic json decode err: %v", err)
+		return
+	}
+	if ok := models.DelDynamic(req.DynamicId); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+
 //TODO: 名片点赞
 func ClickLick(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code: config.RESPONSE_ERROR}
@@ -120,7 +137,7 @@ func GetValidateCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rands := rand.New(rand.NewSource(time.Now().UnixNano()))
-	num := fmt.Sprintf("%04d", rands.Int63n(10000))
+	num := fmt.Sprintf("%04d", rands.Int63n(9999))
 	vCode := "#code#=" + num
 	sms, res := models.CreateSMS(req, num)
 	if !res {
@@ -162,7 +179,7 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 获取动态列表
 func GetDynamicList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -182,7 +199,7 @@ func GetDynamicList(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 创建动态
 func NewDynamic(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -200,7 +217,7 @@ func NewDynamic(w http.ResponseWriter, r *http.Request) {
 
 //TODO: 校验验证码
 func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -227,8 +244,8 @@ func CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 }
 
 //TODO: 动态点赞
-func ClickLickDynamic(w http.ResponseWriter, r *http.Request)  {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+func ClickLickDynamic(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -246,7 +263,7 @@ func ClickLickDynamic(w http.ResponseWriter, r *http.Request)  {
 }
 
 func GetSystemParams(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -285,8 +302,6 @@ func SendJuHeSMS(phone string, tpId string, vCode string) (map[string]interface{
 	}
 	return nil, false
 }
-
-
 
 func Get(apiURL string, params url.Values) (rs []byte, err error) {
 	var Url *url.URL

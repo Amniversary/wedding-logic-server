@@ -46,6 +46,14 @@ func CreateDynamic(req *CardDynamic) bool {
 	return true
 }
 
+func DelDynamic(dynamic int64) bool {
+	if err := db.Model(&CardDynamic{}).Where("id = ?", dynamic).Update("status", 0).Error; err != nil {
+		log.Printf("delete card dynamic err: %v", err)
+		return false
+	}
+	return true
+}
+
 func GetDynamicList(req *config.GetDynamicList) ([]config.DynamicList, bool) {
 	var list []config.DynamicList
 	err := db.Table("cCardDynamic cd").

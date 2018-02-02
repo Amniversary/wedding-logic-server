@@ -13,6 +13,7 @@ const (
 	GET_DYNAMIC_LIST    = "getDynamicList"    //TODO: 获取动态列表
 	CLICK_LICK_DYNAMIC  = "clickLickDynamic"  //TODO: 动态点赞
 	GET_SYSTEM_PARAMS   = "getSystemParams"   //TODO: 获取系统参数
+	DEL_DYNAMIC         = "delDynamic"        //TODO: 删除动态
 )
 
 const (
@@ -37,6 +38,10 @@ type ClickLick struct {
 	CardId int64 `json:"cardId"`
 	UserId int64 `json:"userId"`
 	Status int64 `json:"status"`
+}
+
+type DelDynamic struct {
+	DynamicId int64 `json:"dynamicId"`
 }
 
 type DynamicClick struct {
