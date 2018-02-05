@@ -31,13 +31,27 @@ const (
 	ERROR_MSG = "系统错误"
 )
 
-
 type SystemParams struct {
 	CreateQrCode int64 `json:"create_qrcode"`
 }
 
 type GetQrcode struct {
 	CardId int64 `json:"cardId"`
+}
+
+type RepCode struct {
+	Url string `json:"url"`
+}
+
+type GenQrcode struct {
+	Qrcode       int64  `json:"qrcode"`
+	Pic          string `json:"pic"`
+	Company      string `json:"company"`
+	Name         string `json:"name"`
+	Professional string `json:"professional"`
+	Year         string `json:"year"`
+	Fame         int64  `json:"fame"`
+	Lick         int64  `json:"lick"`
 }
 
 type GenWeddingCardReq struct {

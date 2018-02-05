@@ -11,7 +11,6 @@ import (
 	"time"
 	"io/ioutil"
 	"net/url"
-	"github.com/Amniversary/wedding-logic-server/components"
 	"bytes"
 )
 
@@ -115,6 +114,7 @@ func DelDynamic(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+//TODO: 获取微信分享二维码
 func GetQrcode(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
@@ -125,7 +125,20 @@ func GetQrcode(w http.ResponseWriter, r *http.Request) {
 		log.Printf("GetQrcode json decode err: %v", err)
 		return
 	}
-	components.GenCardQrcode()
+	card, err := models.GenCardQrcode(req.CardId)
+	if err != nil {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Url, err := SendGenQrcode(&card)
+	if err != nil {
+		log.Printf("send genQrcode request err: %v", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	rsp := &config.RepCode{}
+	rsp.Url = Url
+	Response.Data = rsp
 	Response.Code = config.RESPONSE_OK
 }
 
@@ -393,4 +406,46 @@ func Post(apiUrl string, params url.Values) (rs []byte, err error) {
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
+}
+
+func SendGenQrcode(card *models.Card) (string, error) {
+	Url := "http://172.17.16.11:5607/api/response.do"
+	client := http.Client{}
+	data := card
+	request := &config.GenWeddingCardReq{
+		ActionName: "gen_card_qrcode",
+		Data:       data,
+	}
+	reqBytes, err := json.Marshal(request)
+	if err != nil {
+		log.Printf("GenCardQrcode json encode err: %v", err)
+		return "", err
+	}
+	req, err := http.NewRequest("POST", Url, bytes.NewBuffer(reqBytes))
+	if err != nil {
+		log.Printf("http new request err: %v", err)
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("http do request err : %v", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	rspBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("ioutil realAll err: %v", err)
+		return "", err
+	}
+	response := &config.Response{}
+	if err := json.Unmarshal(rspBody, response); err != nil {
+		log.Printf("json decode err: %v", err)
+		return "", err
+	}
+	if response.Code != config.RESPONSE_OK {
+		log.Printf("wedding card server is err: [%v], response-Code: [%d], errMsg:[%s]", request, response.Code, response.Msg)
+		return "", fmt.Errorf("wedding card service genCard error.")
+	}
+	return response.Msg, nil
 }

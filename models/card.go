@@ -207,3 +207,16 @@ func GetUserCode(userId int64) (SmsMessage, error) {
 	}
 	return sms, err
 }
+
+func GenCardQrcode(cardId int64) (Card, error) {
+	card := Card{}
+	err := db.Table("cCard").
+		Select("id, qrcode, pic, company, name, professional, year, fame, lick").
+		Where("id = ?", cardId).
+		Limit(1).Find(&card).Error
+	if err != nil {
+		log.Printf("select CardQrcode err : %v", err)
+		return card, err
+	}
+	return card, nil
+}
