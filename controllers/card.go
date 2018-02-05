@@ -198,7 +198,6 @@ func MyCardInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Data = card
 	Response.Code = config.RESPONSE_OK
-	log.Printf("[myCardInfo] Response : %v", Response)
 }
 
 //TODO: 获取动态列表
