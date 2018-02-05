@@ -8,11 +8,12 @@ import (
 )
 
 type Card struct {
-	ID           uint64  `gorm:"primary_key" json:"id"`
+	ID           int64  `gorm:"primary_key" json:"id"`
 	UserId       int64   `gorm:"not null;default 0;type:int;index" json:"userId"`
 	Name         string  `gorm:"not null;default:'';type:varchar(64)" json:"name"`
 	Phone        string  `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
 	Pic          string  `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
+	Qrcode       string  `gorm:"not null;default:'';type:varchar(256)" json:"qrcode"`
 	Professional string  `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
 	Year         string  `gorm:"not null;default:'';type:varchar(64)" json:"year"`
 	Company      string  `gorm:"not null;default:'';type:varchar(128)" json:"company"`
@@ -63,14 +64,15 @@ func (Collection) TableName() string {
 	return "cCollection"
 }
 
-func CreateCardModel(card *Card) error {
+func CreateCardModel(card *Card) (int64, error) {
 	card.UpdateAt = time.Now().Unix()
 	card.CreateAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
 		log.Printf("Create Card Model error: %v", err)
-		return err
+		return card.ID, err
 	}
-	return nil
+
+	return card.ID,nil
 }
 
 func UpdateCardModel(card *Card) bool {
@@ -185,8 +187,6 @@ func CreateSMS(req *config.ValidateCode, vCode string) (SmsMessage, bool) {
 	}
 	return sms, true
 }
-
-
 
 func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 	net := netReturn["result"].(map[string]interface{})

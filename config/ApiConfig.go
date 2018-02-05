@@ -14,6 +14,7 @@ const (
 	CLICK_LICK_DYNAMIC  = "clickLickDynamic"  //TODO: 动态点赞
 	GET_SYSTEM_PARAMS   = "getSystemParams"   //TODO: 获取系统参数
 	DEL_DYNAMIC         = "delDynamic"        //TODO: 删除动态
+	GET_QRCODE          = "getQrcode"         //TODO: 获取二维码
 )
 
 const (
@@ -30,8 +31,18 @@ const (
 	ERROR_MSG = "系统错误"
 )
 
+
 type SystemParams struct {
 	CreateQrCode int64 `json:"create_qrcode"`
+}
+
+type GetQrcode struct {
+	CardId int64 `json:"cardId"`
+}
+
+type GenWeddingCardReq struct {
+	ActionName string      `json:"action_name"`
+	Data       interface{} `json:"data"`
 }
 
 type ClickLick struct {
