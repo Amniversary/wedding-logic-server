@@ -418,7 +418,7 @@ func SendGenQrcode(card *models.Card) (string, error) {
 	}
 	reqBytes, err := json.Marshal(request)
 	if err != nil {
-		log.Printf("GenCardQrcode json encode err: %v", err)
+		log.Printf("SendCardQrcode json encode err: %v", err)
 		return "", err
 	}
 	req, err := http.NewRequest("POST", Url, bytes.NewBuffer(reqBytes))
