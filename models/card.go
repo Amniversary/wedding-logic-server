@@ -8,7 +8,7 @@ import (
 )
 
 type Card struct {
-	ID           int64  `gorm:"primary_key" json:"id"`
+	ID           int64   `gorm:"primary_key" json:"id"`
 	UserId       int64   `gorm:"not null;default 0;type:int;index" json:"userId"`
 	Name         string  `gorm:"not null;default:'';type:varchar(64)" json:"name"`
 	Phone        string  `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
@@ -72,7 +72,7 @@ func CreateCardModel(card *Card) (int64, error) {
 		return card.ID, err
 	}
 
-	return card.ID,nil
+	return card.ID, nil
 }
 
 func UpdateCardModel(card *Card) bool {
@@ -137,6 +137,9 @@ func GetCardInfo(cardId int64, userId int64) (config.UserCardInfo, error) {
 func CreateCollect(cardId int64, userId int64) (Collection, error) {
 	collect := Collection{CardId: cardId, UserId: userId, Status: 1}
 	if err := db.Where("user_id = ? and card_id = ?", userId, cardId).First(&collect).Error; err != nil {
+		log.Printf("select collect err : %v", err)
+	}
+	if collect.ID == 0 {
 		collect.CreateAt = time.Now().Unix()
 		collect.UpdateAt = time.Now().Unix()
 		if err := db.Create(&collect).Error; err != nil {
@@ -153,7 +156,10 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 func SetClickLick(req *config.ClickLick) (bool, error) {
 	collection := Collection{}
 	if err := db.Where("user_id = ? and card_id = ?", req.UserId, req.CardId).First(&collection).Error; err != nil {
-		return false, err
+		log.Printf("select Click lick first err: %v", err)
+	}
+	if collection.ID == 0 {
+		return false, nil
 	}
 	if req.Status == 2 {
 		req.Status = 0

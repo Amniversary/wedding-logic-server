@@ -65,6 +65,7 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		DelDynamic(w, r)
 	case config.GET_QRCODE:
 		GetQrcode(w, r)
+
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)

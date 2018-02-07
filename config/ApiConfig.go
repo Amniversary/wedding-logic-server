@@ -142,3 +142,7 @@ type DynamicList struct {
 	IsClick  int64  `json:"is_click"`
 	CreateAt int64  `json:"create_at"`
 }
+
+type EnterCardMini struct {
+	UserId int64 `json:"userId"`
+}
