@@ -99,7 +99,7 @@ func GetCardData(cardId int64, userId int64) (config.UserCardInfo, error) {
 func GetCardList(req *config.GetCardList) ([]config.UserCardList, bool) {
 	var list []config.UserCardList
 	err := db.Table("cCollection cc").
-		Select("cr.id, cr.user_id, name, pic, professional,year,fame, lick").
+		Select("cr.id, cr.user_id, name, pic, professional, company, year,fame, lick").
 		Joins("inner join cCard cr on cc.card_id = cr.id").
 		Where("cc.user_id = ?", req.UserId).
 		Offset((req.PageNo - 1) * req.PageSize).

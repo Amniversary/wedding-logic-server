@@ -98,6 +98,7 @@ type UserCardList struct {
 	Name         string `json:"name"`
 	Pic          string `json:"pic"`
 	Professional string `json:"professional"`
+	Company 	 string `json:"company"`
 	Year         string `json:"year"`
 	Fame         int64  `json:"fame"`
 	Lick         int64  `json:"lick"`
