@@ -172,6 +172,7 @@ func GetValidateCode(w http.ResponseWriter, r *http.Request) {
 		log.Printf("ValidateCode json decode err: %v", err)
 		return
 	}
+	log.Printf("req : %v", req)
 	rands := rand.New(rand.NewSource(time.Now().UnixNano()))
 	num := fmt.Sprintf("%04d", rands.Int63n(9999))
 	vCode := "#code#=" + num
