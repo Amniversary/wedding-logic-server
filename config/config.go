@@ -1,7 +1,11 @@
 package config
 
+import "log"
+
 const (
-	ServerName = "CardLogic"
+	RESPONSE_OK = 0
+	RESPONSE_ERROR = 1
+	ERROR_MSG = "系统错误"
 )
 
 type Response struct {
@@ -10,21 +14,36 @@ type Response struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-type GetCardInfo struct {
-	CardId int64 `json:"cardId"`
-	UserId int64 `json:"userId"`
+type DBInfo struct {
+	User   string
+	Pass   string
+	Host   string
+	DBName string
 }
 
-type GetCardList struct {
-	UserId   int64 `json:"userId"`
-	PageNo   int64 `json:"pageNo"`
-	PageSize int64 `json:"pageSize"`
+type Config struct {
+	Debug bool
+	DBDebug bool
+
+	Version string
+	Port string
+	DBInfo
 }
 
-const (
-	DBName = "wedding-card" 
-	USER   = "root"         
-	PASS   = "root"         
-	HOST   = "127.0.0.1"    
-	DEBUG  = "dev"          // dev or prod
-)
+func NewConfig() *Config {
+	c := new(Config)
+	c.DBInfo.Host = "sh-cdb-c7gk8cwq.sql.tencentcdb.com:63769"
+	c.DBInfo.User = "root"
+	c.DBInfo.Pass = "tkC42cwy2U3SQwHw"
+	c.DBInfo.DBName = "wedding_card"
+
+	c.Debug = false
+	c.DBDebug = true
+	c.Version = "1.0.1"
+	c.Port = ":5609"
+
+	log.Printf("Debug:[%v], DBDebug:[%v], Version:[%s], DBInfo:[User:[%s], Pass:[%s], Host:[%s], DBName:[%s]].",
+		c.Debug, c.DBDebug, c.Version, c.User, c.Pass, c.Host, c.DBName, )
+
+	return c
+}

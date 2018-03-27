@@ -1,31 +1,31 @@
-package models
+package mysql
 
 import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jinzhu/gorm"
-	"fmt"
 	"github.com/Amniversary/wedding-logic-server/config"
+	"fmt"
 	"log"
 )
 
 var db *gorm.DB
 
-func InitDataBase() {
-	openDb()
+func NewMysql(c *config.Config) {
+	openDb(c)
 }
 
-func openDb() {
+func openDb(c *config.Config) {
 	db1, err := gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&loc=Local",
-		config.USER,
-		config.PASS,
-		config.HOST,
-		config.DBName,
+		c.DBInfo.User,
+		c.DBInfo.Pass,
+		c.DBInfo.Host,
+		c.DBInfo.DBName,
 	))
 	if err != nil {
 		log.Printf("init DateBase error: [%v]", err)
 		return
 	}
-	if config.DEBUG == "dev" {
+	if c.DBDebug {
 		db1.LogMode(true)
 	}
 
@@ -36,5 +36,5 @@ func openDb() {
 }
 
 func initTable() {
-	db.AutoMigrate(new(Card), new(Collection), new(SmsMessage), new(CardDynamic), new(ClickDynamic))
+	db.AutoMigrate(new(Card), new(Collection), new(Production), new(ClickProduction), new(SmsMessage))
 }

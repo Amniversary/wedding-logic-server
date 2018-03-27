@@ -1,25 +1,29 @@
-package controllers
+package server
 
 import (
+	"log"
+	"time"
+	"fmt"
 	"net/http"
 	"github.com/Amniversary/wedding-logic-server/config"
-	"fmt"
 	"encoding/json"
-	"time"
-	"github.com/Amniversary/wedding-logic-server/models"
-	"log"
 )
 
-func init() {
-	models.InitDataBase()
-	http.HandleFunc("/rpc", RunRpc)
-}
+const (
+	ServerName          = "FindWedding"
+	SET_CARD            = "setCard"
+	UP_CARD             = "upCard"
+	GET_VALIDATE_CODE   = "getValidateCode"
+	GET_CARD_INFO       = "getCardInfo"
+	NEW_PRODUCTION      = "newProduction"
+	CLICK_LIKE          = "clickLike"
+	CHECK_VALIDATE_CODE = "checkValidateCode"
+	GET_PRODUCTION_LIST = "getProductionList"
+	CLICK_PRODUCTION    = "clickLikeProduction"
+	DEL_PRODUCTION      = "delDynamic"
+)
 
-func Run() {
-	http.ListenAndServe(":5609", nil)
-}
-
-func RunRpc(w http.ResponseWriter, r *http.Request) {
+func (s *Server) rpc(w http.ResponseWriter, r *http.Request) {
 	res := &config.Response{Code: config.RESPONSE_OK}
 	if r.Method != "POST" {
 		log.Printf("Method not be Post Request [%s]\n", r.Method)
@@ -27,8 +31,8 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	serverName := r.Header.Get("ServerName")
-	if serverName != config.ServerName {
-		log.Printf("ServerName: [%s]  request -> ServerName: [%s] Method: [%s]\n", config.ServerName, serverName, r.Method)
+	if serverName != ServerName {
+		log.Printf("ServerName: [%s]  request -> ServerName: [%s] Method: [%s]\n", ServerName, serverName, r.Method)
 		EchoJson(w, http.StatusOK, res)
 		return
 	}
@@ -39,33 +43,26 @@ func RunRpc(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Request MethodName: [%s], Rtime[%v]\n", methodName, time.Now().Sub(start))
 	}()
 	switch methodName {
-	case config.SET_CARD:
-		SetCard(w, r)
-	case config.UP_CARD:
-		UpCard(w, r)
-	case config.GET_CARD_INFO:
-		GetCardInfo(w, r)
-	case config.GET_CARD_LIST:
-		GetCardList(w, r)
-	case config.GET_VALIDATE_CODE:
-		GetValidateCode(w, r)
-	case config.NEW_DYNAMIC:
-		NewDynamic(w, r)
-	case config.MY_CARD_INFO:
-		MyCardInfo(w, r)
-	case config.CHECK_VALIDATE_CODE:
-		CheckValidateCode(w, r)
-	case config.GET_DYNAMIC_LIST:
-		GetDynamicList(w, r)
-	case config.CLICK_LICK_DYNAMIC:
-		ClickLickDynamic(w, r)
-	case config.GET_SYSTEM_PARAMS:
-		GetSystemParams(w, r)
-	case config.DEL_DYNAMIC:
-		DelDynamic(w, r)
-	case config.GET_QRCODE:
-		GetQrcode(w, r)
-
+	case SET_CARD:
+		s.AddCard(w, r)
+	case CLICK_PRODUCTION:
+		s.ClickLikeProduction(w, r)
+	case UP_CARD:
+		s.UpCard(w, r)
+	case GET_VALIDATE_CODE:
+		s.GetValidateCode(w, r)
+	case GET_CARD_INFO:
+		s.GetCardInfo(w, r)
+	case CHECK_VALIDATE_CODE:
+		s.CheckValidateCode(w, r)
+	case NEW_PRODUCTION:
+		s.NewProduction(w, r)
+	case CLICK_LIKE:
+		s.ClickLikeProduction(w, r)
+	case GET_PRODUCTION_LIST:
+		s.GetProductionList(w, r)
+	case DEL_PRODUCTION:
+		s.DelProduction(w, r)
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)
