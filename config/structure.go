@@ -47,3 +47,37 @@ type CheckValidateCode struct {
 	UserId int64  `json:"userId"`
 	Code   string `json:"code"`
 }
+
+type NewSchedule struct {
+	UserId      int64            `json:"userId"`
+	Theme       string           `json:"theme"`
+	TimeFrame   string           `json:"time_frame"`
+	Site        string           `json:"site"`
+	Time        string           `json:"time"`
+	Remind		string			 `json:"remind"`
+	HavePay     float64          `json:"have_pay"`
+	TotalPrice  float64          `json:"total_price"`
+	Status      int64            `json:"status"`
+	Phone       string           `json:"phone"`
+	Cooperation []NewCooperation `json:"cooperation"`
+}
+
+type UpSchedule struct {
+	ID 			int64			 `json:"id"`
+	Theme       string           `json:"theme"`
+	TimeFrame   string           `json:"time_frame"`
+	Site        string           `json:"site"`
+	Time        string           `json:"time"`
+	Remind		string			 `json:"remind"`
+	HavePay     float64          `json:"have_pay"`
+	TotalPrice  float64          `json:"total_price"`
+	Status      int64            `json:"status"`
+	Phone       string           `json:"phone"`
+	Cooperation []NewCooperation `json:"cooperation"`
+}
+
+type NewCooperation struct {
+	Professional string `json:"professional"`
+	Name         string `json:"name"`
+	Phone        string `json:"phone"`
+}

@@ -1,15 +1,15 @@
 package server
 
 import (
+	"log"
+	"time"
+	"fmt"
 	"net/http"
 	"encoding/json"
-	"log"
 	"math/rand"
 
 	"github.com/Amniversary/wedding-logic-server/config"
 	"github.com/Amniversary/wedding-logic-server/config/mysql"
-	"time"
-	"fmt"
 	"github.com/Amniversary/wedding-logic-server/components"
 )
 
@@ -82,67 +82,6 @@ func (s *Server) GetCardInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-	TODO: 创建作品
- */
-func (s *Server) NewProduction(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code: config.RESPONSE_ERROR}
-	defer func() {
-		EchoJson(w, http.StatusOK, Response)
-	}()
-	req := &mysql.Production{}
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		log.Printf("NewDynamic json decode err : %v", err)
-		return
-	}
-	if ok := mysql.CreateProduction(req); !ok {
-		Response.Msg = config.ERROR_MSG
-		return
-	}
-	Response.Code = config.RESPONSE_OK
-}
-
-/**
-	TODO: 作品点赞
- */
-func (s *Server) ClickLikeProduction(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code: config.RESPONSE_ERROR}
-	defer func() {
-		EchoJson(w, http.StatusOK, Response)
-	}()
-	req := &config.ProductionClickLike{}
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		log.Printf("clickLikeProduction json decode err: [%v]", err)
-		return
-	}
-	log.Printf("%v", req)
-	if ok := mysql.ProductionClickLike(req); !ok {
-		Response.Msg = config.ERROR_MSG
-		return
-	}
-	Response.Code = config.RESPONSE_OK
-}
-
-/**
-	TODO: 删除作品
- */
-func (s *Server) DelProduction(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code: config.RESPONSE_ERROR}
-	defer func() {
-		EchoJson(w, http.StatusOK, Response)
-	}()
-	req := &config.DelProduction{}
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		log.Printf("delProduction json decode err : [%v]", err)
-		return
-	}
-	if ok := mysql.DelProduction(req.ProductionId); !ok {
-		Response.Msg = config.ERROR_MSG
-		return
-	}
-	Response.Code = config.RESPONSE_OK
-}
-
-/**
 	TODO: 获取短信验证码
  */
 func (s *Server) GetValidateCode(w http.ResponseWriter, r *http.Request) {
@@ -176,27 +115,6 @@ func (s *Server) GetValidateCode(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-	TODO: 获取作品列表
- */
-func (s *Server) GetProductionList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code: config.RESPONSE_ERROR}
-	defer func() {
-		EchoJson(w, http.StatusOK, Response)
-	}()
-	req := &config.GetProductionList{}
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		log.Printf("getDynamicList json decode err : %v", err)
-		return
-	}
-	list, ok := mysql.GetProductionList(req)
-	if !ok {
-		Response.Msg = config.ERROR_MSG
-		return
-	}
-	Response.Data = list
-	Response.Code = config.RESPONSE_OK
-}
-/**
 	TODO: 校验验证码
  */
 func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
@@ -215,7 +133,7 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := time.Now().Unix()
-	if (t - res.CreateAt) > 600 {
+	if (t - res.CreatedAt) > 600 {
 		Response.Msg = "验证码已过期, 请重新获取 !"
 		return
 	}
@@ -225,5 +143,3 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
-
-//func (s *Server)

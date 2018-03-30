@@ -15,8 +15,8 @@ const (
 )
 
 func CreateCard(card *Card) (error) {
-	card.UpdateAt = time.Now().Unix()
-	card.CreateAt = time.Now().Unix()
+	card.UpdatedAt = time.Now().Unix()
+	card.CreatedAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
 		log.Printf("Create Card Model error: %v", err)
 		return err
@@ -55,7 +55,7 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 		log.Printf("select collect err : %v", err)
 	}
 	if collect.ID == 0 {
-		collect.CreateAt = time.Now().Unix()
+		collect.CreatedAt = time.Now().Unix()
 		if err := db.Create(&collect).Error; err != nil {
 			log.Printf("create collection error: %v", err)
 			return collect, err
@@ -68,7 +68,7 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 }
 
 func CreateProduction(production *Production) bool {
-	production.CreateAt = time.Now().Unix()
+	production.CreatedAt = time.Now().Unix()
 	if err := db.Create(&production).Error; err != nil {
 		log.Printf("create dynamic model err : %v", err)
 		return false
@@ -82,18 +82,18 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 		if click.ID == 0 {
 			tx := db.Begin()
 			clickProduction := &ClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE}
-			if err := db.Create(&clickProduction).Error; err != nil {
+			if err := tx.Create(&clickProduction).Error; err != nil {
 				tx.Rollback()
 				log.Printf("create clickProduction err: [%v] ", err)
 				return false
 			}
-			err := db.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like + ?"), 1).Error
+			err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like + ?"), 1).Error
 			if err != nil {
 				tx.Rollback()
 				log.Printf("uddate Production like err : [%v] ", err)
 				return false
 			}
-			err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?"), 1).Error
+			err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?"), 1).Error
 			if err != nil {
 				tx.Rollback()
 				log.Printf("update Card like err : [%v]", err)
@@ -110,7 +110,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 		return true
 	}
 	tx := db.Begin()
-	if err := db.Model(&ClickProduction{}).Update("status", req.Status).Error; err != nil {
+	if err := tx.Model(&ClickProduction{}).Update("status", req.Status).Error; err != nil {
 		log.Printf("update click Production err : [%v], [ProductionId: %d, status: %d]", err, req.ProductionId, req.Status)
 		tx.Rollback()
 		return false
@@ -118,19 +118,19 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 	var err error
 	switch req.Status {
 	case CANCEL_LIKE:
-		if err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like - ?", 1)).Error; err != nil {
+		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like - ?", 1)).Error; err != nil {
 			log.Printf("update card like err : [%v], [CardId: %d]", err, req.CardId)
 			tx.Rollback()
 			return false
 		}
-		err = db.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like - ?", 1)).Error
+		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like - ?", 1)).Error
 	case CLICK_LIKE:
-		if err = db.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?", 1)).Error; err != nil {
+		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?", 1)).Error; err != nil {
 			log.Printf("update card like err : [%v], [CardId: %d]", err, req.CardId)
 			tx.Rollback()
 			return false
 		}
-		err = db.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("lick + ?", 1)).Error
+		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("lick + ?", 1)).Error
 	}
 	if err != nil {
 		log.Printf("update card Production like err : [%v], [ProductionId: %d]", err, req.ProductionId)
@@ -151,7 +151,7 @@ func DelProduction(productionId int64) bool {
 
 func CreateSMS(req *config.ValidateCode, vCode string) (*SmsMessage, bool) {
 	sms := &SmsMessage{UserId: req.UserId, Phone: req.Phone, Type: req.Type, Code: vCode}
-	sms.CreateAt = time.Now().Unix()
+	sms.CreatedAt = time.Now().Unix()
 	if err := db.Create(&sms).Error; err != nil {
 		log.Printf("create sms message err: %s", err)
 		return sms, false
@@ -193,4 +193,88 @@ func GetUserCode(userId int64) (SmsMessage, error) {
 		return sms, err
 	}
 	return sms, err
+}
+
+func NewSchedule(req *config.NewSchedule) bool {
+	schedule := &Schedule{
+		UserId:     req.UserId,
+		Theme:      req.Theme,
+		Phone:      req.Phone,
+		Site:       req.Site,
+		Time:       req.Time,
+		Remind: 	req.Remind,
+		TimeFrame:  req.TimeFrame,
+		HavePay:    req.HavePay,
+		TotalPrice: req.TotalPrice,
+		Status:     req.Status,
+		CreatedAt:  time.Now().Unix(),
+	}
+	tx := db.Begin()
+	if err := tx.Create(&schedule).Error; err != nil {
+		tx.Rollback()
+		log.Printf("schedule create db err : [%v]", err)
+		return false
+	}
+	if len(req.Cooperation) > 0 {
+		for _, v := range req.Cooperation {
+			err := tx.Create(&Cooperation{
+				ScheduleId: schedule.ID,
+				Professional:v.Professional,
+				Name:v.Name,
+				Phone:v.Phone,
+				CreatedAt:time.Now().Unix(),
+			}).Error
+			if err != nil {
+				tx.Rollback()
+				log.Printf("create cooperation err : [%v]", err)
+				return false
+			}
+		}
+	}
+	tx.Commit()
+	return true
+}
+
+func UpdateSchedule(req *config.UpSchedule) bool {
+	schedule := &Schedule{
+		ID: req.ID,
+		Theme: req.Theme,
+		Time: req.Time,
+		TimeFrame: req.TimeFrame,
+		Site: req.Site,
+		Remind: req.Remind,
+		HavePay: req.HavePay,
+		TotalPrice: req.TotalPrice,
+		Status: req.Status,
+		Phone: req.Phone,
+	}
+	tx := db.Begin()
+	if err := tx.Table("Schedule").Where("id = ?", req.ID).Update(&schedule).Error; err != nil {
+		tx.Rollback()
+		log.Printf("update Schedule err: [%v]", err)
+		return false
+	}
+	if err := tx.Where("schedule_id = ?", req.ID).Delete(&Cooperation{}).Error; err != nil {
+		tx.Rollback()
+		log.Printf("delete cooperation err: [%v]", err)
+		return false
+	}
+	if len(req.Cooperation) > 0 {
+		for _, v := range req.Cooperation {
+			err := tx.Create(&Cooperation{
+				ScheduleId: schedule.ID,
+				Professional:v.Professional,
+				Name:v.Name,
+				Phone:v.Phone,
+				CreatedAt:time.Now().Unix(),
+			}).Error
+			if err != nil {
+				tx.Rollback()
+				log.Printf("create cooperation err : [%v]", err)
+				return false
+			}
+		}
+	}
+	tx.Commit()
+	return true
 }

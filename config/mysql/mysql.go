@@ -36,5 +36,13 @@ func openDb(c *config.Config) {
 }
 
 func initTable() {
-	db.AutoMigrate(new(Card), new(Collection), new(Production), new(ClickProduction), new(SmsMessage))
+	db.AutoMigrate(
+		new(Card),
+		new(Collection),
+		new(Production),
+		new(ClickProduction),
+		new(SmsMessage),
+		new(Schedule),
+		new(Cooperation),
+		)
 }

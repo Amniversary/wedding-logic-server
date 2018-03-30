@@ -20,7 +20,9 @@ const (
 	CHECK_VALIDATE_CODE = "checkValidateCode"
 	GET_PRODUCTION_LIST = "getProductionList"
 	CLICK_PRODUCTION    = "clickLikeProduction"
-	DEL_PRODUCTION      = "delDynamic"
+	DEL_PRODUCTION      = "delProduction"
+	NEW_SCHEDULE 		= "newSchedule"
+	UP_SCHEDULE			= "upSchedule"
 )
 
 func (s *Server) rpc(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +65,11 @@ func (s *Server) rpc(w http.ResponseWriter, r *http.Request) {
 		s.GetProductionList(w, r)
 	case DEL_PRODUCTION:
 		s.DelProduction(w, r)
+	case NEW_SCHEDULE:
+		s.NewSchedule(w, r)
+	case UP_SCHEDULE:
+		s.UpSchedule(w, r)
+
 	default:
 		res.Code = 1
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)
