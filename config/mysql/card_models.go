@@ -195,7 +195,7 @@ func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, 
 
 func GetUserCode(userId int64) (SmsMessage, error) {
 	sms := SmsMessage{}
-	err := db.Where("user_id = ? and status = 1", userId).Select("id, user_id, code, create_at").Order("id desc").Limit(1).Find(&sms).Error
+	err := db.Where("user_id = ? and status = 1", userId).Select("id, user_id, code, created_at").Order("id desc").Limit(1).Find(&sms).Error
 	if err != nil {
 		log.Printf("select user code err : %v", err)
 		return sms, err
