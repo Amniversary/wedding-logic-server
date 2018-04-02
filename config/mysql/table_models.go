@@ -1,24 +1,22 @@
 package mysql
 
 type Card struct {
-	ID           int64   `gorm:"primary_key" json:"id"`
-	UserId       int64   `gorm:"not null;default 0;type:int;index" json:"userId"`
-	Name         string  `gorm:"not null;default:'';type:varchar(64)" json:"name"`
-	Phone        string  `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
-	Pic          string  `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
-	Qrcode       string  `gorm:"not null;default:'';type:varchar(256)" json:"qrcode"`
-	BgPic        string  `gorm:"not null;default:'';type:varchar(256)" json:"bg_pic"`
-	Professional string  `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
-	Company      string  `gorm:"not null;default:'';type:varchar(128)" json:"company"`
-	Site         string  `gorm:"not null;default:'';type:varchar(256)" json:"site"`
-	Explain      string  `gorm:"not null;type:text" json:"explain"`
-	Fame         int64   `gorm:"not null;default:0;type:int" json:"fame"`
-	Like         int64   `gorm:"not null;default:0;type:int" json:"like"`
-	Production   int64   `gorm:"not null;default:0;type:int" json:"production"`
-	Longitude    float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"longitude"`
-	Latitude     float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"latitude"`
-	CreatedAt    int64   `gorm:"not null;default:0;type:int" json:"-"`
-	UpdatedAt    int64   `gorm:"not null;default:0;type:int" json:"-"`
+	ID           int64  `gorm:"primary_key" json:"id"`
+	UserId       int64  `gorm:"not null;default 0;type:int;index" json:"userId"`
+	Name         string `gorm:"not null;default:'';type:varchar(64)" json:"name"`
+	Phone        string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
+	Pic          string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
+	Qrcode       string `gorm:"not null;default:'';type:varchar(256)" json:"qrcode"`
+	BgPic        string `gorm:"not null;default:'';type:varchar(256)" json:"bg_pic"`
+	Professional string `gorm:"not null;default:'';type:varchar(64)" json:"professional"`
+	Company      string `gorm:"not null;default:'';type:varchar(128)" json:"company"`
+	Site         string `gorm:"not null;default:'';type:varchar(256)" json:"site"`
+	Explain      string `gorm:"not null;type:text" json:"explain"`
+	Fame         int64  `gorm:"not null;default:0;type:int" json:"fame"`
+	Like         int64  `gorm:"not null;default:0;type:int" json:"like"`
+	Production   int64  `gorm:"not null;default:0;type:int" json:"production"`
+	CreatedAt    int64  `gorm:"not null;default:0;type:int" json:"-"`
+	UpdatedAt    int64  `gorm:"not null;default:0;type:int" json:"-"`
 }
 
 /**
@@ -150,4 +148,12 @@ type Team struct {
  */
 func (Team) TableName() string {
 	return "Team"
+}
+
+type TeamProduction struct {
+	ID      int64  `gorm:"primary_key" json:"id"`
+	TeamId  int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
+	Content string `gorm:"not null;default:'';type:varchar(512)" json:"content"`
+	Pic     string `gorm:"not null;default:'';type:text" json:"pic"`
+	Like    int64  `gorm:"not null;default:0;type:int" json:"like"`
 }

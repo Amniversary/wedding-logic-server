@@ -85,6 +85,30 @@ func (s *Server) GetCardInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
+	TODO: 获取我的名片详情
+ */
+func (s *Server) GetMyCardInfo(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetMyCard{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getCardInfo json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	info, ok := mysql.GetMyCardInfo(req.UserId)
+	if !ok {
+		Response.Data = ""
+		Response.Code = config.RESPONSE_OK
+		return 
+	}
+	Response.Data = info
+	Response.Code = config.RESPONSE_OK
+}
+
+/**
 	TODO: 获取短信验证码
  */
 func (s *Server) GetValidateCode(w http.ResponseWriter, r *http.Request) {

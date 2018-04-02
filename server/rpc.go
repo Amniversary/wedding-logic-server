@@ -59,6 +59,7 @@ func (s *Server) initMap() {
 	var MethodMap = map[string]MethodFunc{
 		"setCard":             s.AddCard,
 		"upCard":              s.UpCard,
+		"getMyCard":		   s.GetMyCardInfo,
 		"getValidateCode":     s.GetValidateCode,
 		"getCardInfo":         s.GetCardInfo,
 		"newProduction":       s.NewProduction,

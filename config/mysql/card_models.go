@@ -37,7 +37,7 @@ func UpdateCardModel(card *Card) bool {
 
 func GetUserCardInfo(userId int64, cardId int64) (*Card, error) {
 	card := &Card{}
-	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
+	if err := db.Where("card_id = ? and user_id = ?",cardId ,userId).First(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
 		return card, err
 	}
@@ -47,6 +47,15 @@ func GetUserCardInfo(userId int64, cardId int64) (*Card, error) {
 		}
 	}
 	return card, nil
+}
+
+func GetMyCardInfo(userId int64) (*Card, bool) {
+	card := &Card{}
+	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
+		log.Printf("getMyCardInfo query err: [%v]", err)
+		return nil, false
+	}
+	return card, true
 }
 
 func CreateCollect(cardId int64, userId int64) (Collection, error) {

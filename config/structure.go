@@ -10,6 +10,10 @@ type GetCardInfo struct {
 	UserId int64 `json:"userId"`
 }
 
+type GetMyCard struct {
+	UserId int64 `json:"userId"`
+}
+
 type ProductionClickLike struct {
 	CardId       int64 `json:"cardId"`
 	UserId       int64 `json:"userId"`
@@ -40,7 +44,7 @@ type ProductionList struct {
 	Pic      string `json:"pic"`
 	Like     int64  `json:"like"`
 	IsClick  int64  `json:"is_click"`
-	CreateAt int64  `json:"create_at"`
+	CreatedAt int64  `json:"created_at"`
 }
 
 type CheckValidateCode struct {
