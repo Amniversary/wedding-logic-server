@@ -138,7 +138,8 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := time.Now().Unix()
-	if (t - res.CreatedAt) > 600 {
+	time := t - res.CreatedAt
+	if time > 600 {
 		Response.Msg = "验证码已过期, 请重新获取 !"
 		return
 	}

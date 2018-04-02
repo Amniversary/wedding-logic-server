@@ -83,3 +83,13 @@ func (s *Server) UpTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+/**
+	TODO: 上传团队作品
+ */
+func (s *Server) NewTeamProduction(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+
+}

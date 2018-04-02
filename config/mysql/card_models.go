@@ -180,8 +180,8 @@ func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("Production pd").
-		Select("pd.id, content, pic, like, create_at, ifnull(cc.status, 0) as is_click").
-		Joins("left join ClickProduction cp on cd.id=cc.dynamic_id and user_id = ?", req.UserId).
+		Select("pd.id, content, pic, like, create_at, ifnull(cp.status, 0) as is_click").
+		Joins("left join ClickProduction cp on pd.id=cp.production_id and user_id = ?", req.UserId).
 		Where("cd.card_id = ? and cd.status = 1", req.CardId).
 		Offset((req.PageNo - 1) * req.PageSize).
 		Limit(req.PageSize).
