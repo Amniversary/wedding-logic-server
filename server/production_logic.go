@@ -20,6 +20,7 @@ func (s *Server) GetProductionList(w http.ResponseWriter, r *http.Request) {
 	req := &config.GetProductionList{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("getDynamicList json decode err : %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	list, ok := mysql.GetProductionList(req)
@@ -42,6 +43,7 @@ func (s *Server) DelProduction(w http.ResponseWriter, r *http.Request) {
 	req := &config.DelProduction{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("delProduction json decode err : [%v]", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	if ok := mysql.DelProduction(req.ProductionId); !ok {
@@ -62,6 +64,7 @@ func (s *Server) ClickLikeProduction(w http.ResponseWriter, r *http.Request) {
 	req := &config.ProductionClickLike{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("clickLikeProduction json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	log.Printf("%v", req)
@@ -83,6 +86,7 @@ func (s *Server) NewProduction(w http.ResponseWriter, r *http.Request) {
 	req := &mysql.Production{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("NewDynamic json decode err : %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	if ok := mysql.CreateProduction(req); !ok {

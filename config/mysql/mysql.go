@@ -44,5 +44,6 @@ func initTable() {
 		new(SmsMessage),
 		new(Schedule),
 		new(Cooperation),
+		new(Team),
 		)
 }

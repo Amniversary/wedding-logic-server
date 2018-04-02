@@ -24,6 +24,7 @@ func (s *Server) AddCard(w http.ResponseWriter, r *http.Request) {
 	card := &mysql.Card{}
 	if err := json.NewDecoder(r.Body).Decode(card); err != nil {
 		log.Printf("setCard json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	if err := mysql.CreateCard(card); err != nil {
@@ -50,6 +51,7 @@ func (s *Server) UpCard(w http.ResponseWriter, r *http.Request) {
 	card := &mysql.Card{}
 	if err := json.NewDecoder(r.Body).Decode(card); err != nil {
 		log.Printf("upCard json decode err: %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	if ok := mysql.UpdateCardModel(card); !ok {
@@ -70,6 +72,7 @@ func (s *Server) GetCardInfo(w http.ResponseWriter, r *http.Request) {
 	req := &config.GetCardInfo{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("getCardInfo json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	card, err := mysql.GetUserCardInfo(req.UserId, req.CardId)
@@ -92,6 +95,7 @@ func (s *Server) GetValidateCode(w http.ResponseWriter, r *http.Request) {
 	req := &config.ValidateCode{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("ValidateCode json decode err: %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	rands := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -125,6 +129,7 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	req := &config.CheckValidateCode{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("checkValidateCode json decode err : %v", err)
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	res, err := mysql.GetUserCode(req.UserId)

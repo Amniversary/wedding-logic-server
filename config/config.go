@@ -32,9 +32,9 @@ type Config struct {
 
 func NewConfig() *Config {
 	c := new(Config)
-	c.DBInfo.Host = "127.0.0.1"
+	c.DBInfo.Host = "sh-cdb-c7gk8cwq.sql.tencentcdb.com:63769"
 	c.DBInfo.User = "root"
-	c.DBInfo.Pass = "root"
+	c.DBInfo.Pass = "tkC42cwy2U3SQwHw"
 	c.DBInfo.DBName = "wedding_card"
 
 	c.Debug = false

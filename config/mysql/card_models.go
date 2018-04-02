@@ -69,8 +69,16 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 
 func CreateProduction(production *Production) bool {
 	production.CreatedAt = time.Now().Unix()
-	if err := db.Create(&production).Error; err != nil {
+	tx := db.Begin()
+	if err := tx.Create(&production).Error; err != nil {
 		log.Printf("create dynamic model err : %v", err)
+		tx.Rollback()
+		return false
+	}
+	err := tx.Table("Card").Where("id = ?", production.CardId).Update("production", gorm.Expr("production + 1")).Error
+	if err != nil {
+		log.Printf("update card production err : [%v]", err)
+		tx.Rollback()
 		return false
 	}
 	return true
@@ -142,7 +150,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 }
 
 func DelProduction(productionId int64) bool {
-	if err := db.Model(&Production{}).Where("id = ?", productionId).Error; err != nil {
+	if err := db.Model(&Production{}).Where("id = ?", productionId).Update("status = 0").Error; err != nil {
 		log.Printf("update Production status err : [%v]", err)
 		return false
 	}
@@ -193,88 +201,4 @@ func GetUserCode(userId int64) (SmsMessage, error) {
 		return sms, err
 	}
 	return sms, err
-}
-
-func NewSchedule(req *config.NewSchedule) bool {
-	schedule := &Schedule{
-		UserId:     req.UserId,
-		Theme:      req.Theme,
-		Phone:      req.Phone,
-		Site:       req.Site,
-		Time:       req.Time,
-		Remind: 	req.Remind,
-		TimeFrame:  req.TimeFrame,
-		HavePay:    req.HavePay,
-		TotalPrice: req.TotalPrice,
-		Status:     req.Status,
-		CreatedAt:  time.Now().Unix(),
-	}
-	tx := db.Begin()
-	if err := tx.Create(&schedule).Error; err != nil {
-		tx.Rollback()
-		log.Printf("schedule create db err : [%v]", err)
-		return false
-	}
-	if len(req.Cooperation) > 0 {
-		for _, v := range req.Cooperation {
-			err := tx.Create(&Cooperation{
-				ScheduleId: schedule.ID,
-				Professional:v.Professional,
-				Name:v.Name,
-				Phone:v.Phone,
-				CreatedAt:time.Now().Unix(),
-			}).Error
-			if err != nil {
-				tx.Rollback()
-				log.Printf("create cooperation err : [%v]", err)
-				return false
-			}
-		}
-	}
-	tx.Commit()
-	return true
-}
-
-func UpdateSchedule(req *config.UpSchedule) bool {
-	schedule := &Schedule{
-		ID: req.ID,
-		Theme: req.Theme,
-		Time: req.Time,
-		TimeFrame: req.TimeFrame,
-		Site: req.Site,
-		Remind: req.Remind,
-		HavePay: req.HavePay,
-		TotalPrice: req.TotalPrice,
-		Status: req.Status,
-		Phone: req.Phone,
-	}
-	tx := db.Begin()
-	if err := tx.Table("Schedule").Where("id = ?", req.ID).Update(&schedule).Error; err != nil {
-		tx.Rollback()
-		log.Printf("update Schedule err: [%v]", err)
-		return false
-	}
-	if err := tx.Where("schedule_id = ?", req.ID).Delete(&Cooperation{}).Error; err != nil {
-		tx.Rollback()
-		log.Printf("delete cooperation err: [%v]", err)
-		return false
-	}
-	if len(req.Cooperation) > 0 {
-		for _, v := range req.Cooperation {
-			err := tx.Create(&Cooperation{
-				ScheduleId: schedule.ID,
-				Professional:v.Professional,
-				Name:v.Name,
-				Phone:v.Phone,
-				CreatedAt:time.Now().Unix(),
-			}).Error
-			if err != nil {
-				tx.Rollback()
-				log.Printf("create cooperation err : [%v]", err)
-				return false
-			}
-		}
-	}
-	tx.Commit()
-	return true
 }

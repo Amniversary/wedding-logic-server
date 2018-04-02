@@ -13,6 +13,7 @@ type ServerBase interface {
 
 type Server struct {
 	cfg *config.Config
+	methodMap map[string]MethodFunc
 }
 
 func NewServer(cfg *config.Config) ServerBase {
@@ -21,6 +22,7 @@ func NewServer(cfg *config.Config) ServerBase {
 
 func (s *Server) init() {
 	mysql.NewMysql(s.cfg)
+	s.initMap()
 }
 
 func (s *Server) runServer() {

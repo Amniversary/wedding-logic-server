@@ -54,23 +54,24 @@ type NewSchedule struct {
 	TimeFrame   string           `json:"time_frame"`
 	Site        string           `json:"site"`
 	Time        string           `json:"time"`
-	Remind		string			 `json:"remind"`
+	Remind      string           `json:"remind"`
 	HavePay     float64          `json:"have_pay"`
 	TotalPrice  float64          `json:"total_price"`
-	Status      int64            `json:"status"`
+	PayStatus   int64            `json:"pay_status"`
 	Phone       string           `json:"phone"`
 	Cooperation []NewCooperation `json:"cooperation"`
 }
 
 type UpSchedule struct {
-	ID 			int64			 `json:"id"`
+	ID          int64            `json:"id"`
 	Theme       string           `json:"theme"`
 	TimeFrame   string           `json:"time_frame"`
 	Site        string           `json:"site"`
 	Time        string           `json:"time"`
-	Remind		string			 `json:"remind"`
+	Remind      string           `json:"remind"`
 	HavePay     float64          `json:"have_pay"`
 	TotalPrice  float64          `json:"total_price"`
+	PayStatus   int64            `json:"pay_status"`
 	Status      int64            `json:"status"`
 	Phone       string           `json:"phone"`
 	Cooperation []NewCooperation `json:"cooperation"`
@@ -80,4 +81,51 @@ type NewCooperation struct {
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
+}
+
+type GetUserScheduleList struct {
+	UserId int64 `json:"userId"`
+}
+
+type GetUserScheduleListRes struct {
+	ID        int64  `json:"id"`
+	Theme     string `json:"theme"`
+	TimeFrame string `json:"time_frame"`
+	CreatedAt int64  `json:"created_at"`
+}
+
+type GetScheduleInfo struct {
+	ScheduleId int64 `json:"scheduleId"`
+}
+
+type GetScheduleInfoRes struct {
+	ID          int64                `json:"id"`
+	Theme       string               `json:"theme"`
+	TimeFrame   string               `json:"time_frame"`
+	Site        string               `json:"site"`
+	Time        string               `json:"time"`
+	Remind      string               `json:"remind"`
+	HavePay     float64              `json:"have_pay"`
+	TotalPrice  float64              `json:"total_price"`
+	Status      int64                `json:"status"`
+	Phone       string               `json:"phone"`
+	Cooperation []NewCooperationInfo `json:"cooperation"`
+}
+
+type NewCooperationInfo struct {
+	ID           int64  `json:"id"`
+	Professional string `json:"professional"`
+	Name         string `json:"name"`
+	Phone        string `json:"phone"`
+	CreatedAt    int64  `json:"created_at"`
+}
+
+type NewTeam struct {
+	UserId int64  `json:"userId"`
+	Pic    string `json:"pic"`
+	Name   string `json:"name"`
+}
+
+type GetTeamInfo struct {
+	TeamID int64 `json:"teamId"`
 }
