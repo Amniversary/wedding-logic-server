@@ -57,7 +57,7 @@ func EchoJson(w http.ResponseWriter, status int, data interface{}) error {
 
 func (s *Server) initMap() {
 	var MethodMap = map[string]MethodFunc{
-		"setCard":             s.UpSchedule,
+		"setCard":             s.AddCard,
 		"upCard":              s.UpCard,
 		"getValidateCode":     s.GetValidateCode,
 		"getCardInfo":         s.GetCardInfo,
