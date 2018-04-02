@@ -48,8 +48,6 @@ func NewSchedule(req *config.NewSchedule) bool {
 	return true
 }
 
-
-
 func UpdateSchedule(req *config.UpSchedule) bool {
 	schedule := &Schedule{
 		ID:         req.ID,
