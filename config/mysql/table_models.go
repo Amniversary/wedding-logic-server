@@ -137,7 +137,7 @@ type Team struct {
 	ID        int64  `gorm:"primary_key" json:"id"`
 	UserId    int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
 	Pic       string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
-	Name      string `gorm:"not null;default:'';type:varchar(128)" json:"name"`
+	Name      string `gorm:"not null;default:'';type:varchar(128);index" json:"name"`
 	Cover     string `gorm:"not null;default:'';type:varchar(512)" json:"cover"`
 	Explain   string `gorm:"not null;default:'';type:varchar(512)" json:"explain"`
 	CreatedAt int64  `gorm:"not null;default:0;type:int" json:"created_at"`
@@ -151,9 +151,48 @@ func (Team) TableName() string {
 }
 
 type TeamProduction struct {
-	ID      int64  `gorm:"primary_key" json:"id"`
-	TeamId  int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
-	Content string `gorm:"not null;default:'';type:varchar(512)" json:"content"`
-	Pic     string `gorm:"not null;default:'';type:text" json:"pic"`
-	Like    int64  `gorm:"not null;default:0;type:int" json:"like"`
+	ID        int64  `gorm:"primary_key" json:"id"`
+	TeamId    int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
+	Content   string `gorm:"not null;default:'';type:text" json:"content"`
+	Pic       string `gorm:"not null;default:'';type:text" json:"pic"`
+	Like      int64  `gorm:"not null;default:0;type:int" json:"like"`
+	Status    int64  `gorm:"not null;default:0;type:int" json:"status"`
+	CreatedAt int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+}
+
+/**
+	TODO: 团队作品表
+ */
+func (TeamProduction) TableName() string {
+	return "TeamProduction"
+}
+
+type TeamClickProduction struct {
+	ID           int64 `gorm:"primary_key" json:"id"`
+	UserId       int64 `gorm:"not null;default:0;type:int;index" json:"userId"`
+	ProductionId int64 `gorm:"not null;default:0;type:int;index" json:"productionId"`
+	Status       int64 `gorm:"not null;default:1;type:int" json:"status"`
+	CreatedAt    int64 `gorm:"not null;default:0;type:int" json:"created_at"`
+}
+
+/**
+	TODO: 团队作品点赞表
+ */
+func (TeamClickProduction) TableName() string {
+	return "TeamClickProduction"
+}
+
+type ApplyList struct {
+	ID        int64 `json:"id"`
+	TeamId    int64 `json:"team_id"`
+	UserId    int64 `json:"user_id"`
+	Status    int64 `json:"status"`
+	CreatedAt int64 `json:"created_at"`
+}
+
+/**
+	TODO: 团队申请列表
+ */
+func (ApplyList) TableName() string {
+	return "ApplyList"
 }

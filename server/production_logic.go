@@ -67,7 +67,6 @@ func (s *Server) ClickLikeProduction(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	log.Printf("%v", req)
 	if ok := mysql.ProductionClickLike(req); !ok {
 		Response.Msg = config.ERROR_MSG
 		return

@@ -102,7 +102,7 @@ func (s *Server) GetMyCardInfo(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		Response.Data = ""
 		Response.Code = config.RESPONSE_OK
-		return 
+		return
 	}
 	Response.Data = info
 	Response.Code = config.RESPONSE_OK

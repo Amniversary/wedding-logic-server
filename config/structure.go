@@ -39,11 +39,11 @@ type GetProductionList struct {
 }
 
 type ProductionList struct {
-	ID       int64  `json:"id"`
-	Content  string `json:"content"`
-	Pic      string `json:"pic"`
-	Like     int64  `json:"like"`
-	IsClick  int64  `json:"is_click"`
+	ID        int64  `json:"id"`
+	Content   string `json:"content"`
+	Pic       string `json:"pic"`
+	Like      int64  `json:"like"`
+	IsClick   int64  `json:"is_click"`
 	CreatedAt int64  `json:"created_at"`
 }
 
@@ -132,4 +132,28 @@ type NewTeam struct {
 
 type GetTeamInfo struct {
 	TeamID int64 `json:"teamId"`
+}
+
+type ClickTeamProduction struct {
+	ProductionId int64 `json:"productionId"`
+	UserId       int64 `json:"userId"`
+	Status       int64 `json:"status"`
+}
+
+type GetTeamProduction struct {
+	TeamId   int64 `json:"teamId"`
+	UserId   int64 `json:"userId"`
+	PageNo   int64 `json:"pageNo"`
+	PageSize int64 `json:"pageSize"`
+}
+
+type SearchTeam struct {
+	Name string `json:"name"`
+}
+
+type SearchTeamList struct {
+	ID        int64  `json:"id"`
+	Name      string `json:"name"`
+	Pic       string `json:"pic"`
+	CreatedAt int64  `json:"created_at"`
 }

@@ -28,7 +28,7 @@ func CreateCard(card *Card) (error) {
 }
 
 func UpdateCardModel(card *Card) bool {
-	if err := db.Table("cCard").Where("id = ? and user_id = ?", card.ID, card.UserId).Update(&card).Error; err != nil {
+	if err := db.Table("Card").Where("id = ? and user_id = ?", card.ID, card.UserId).Update(&card).Error; err != nil {
 		log.Printf("update card err : %v, [%v]", err, card)
 		return false
 	}
@@ -98,7 +98,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 	if err := db.Where("user_id = ? and production_id = ?", req.UserId, req.ProductionId).First(&click).Error; err != nil {
 		if click.ID == 0 {
 			tx := db.Begin()
-			clickProduction := &ClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE}
+			clickProduction := &ClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE, CreatedAt: time.Now().Unix()}
 			if err := tx.Create(&clickProduction).Error; err != nil {
 				tx.Rollback()
 				log.Printf("create clickProduction err: [%v] ", err)
@@ -189,7 +189,7 @@ func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("Production pd").
-		Select("pd.id, content, pic, like, create_at, ifnull(cp.status, 0) as is_click").
+		Select("pd.id, content, pic, like, created_at, ifnull(cp.status, 0) as is_click").
 		Joins("left join ClickProduction cp on pd.id=cp.production_id and user_id = ?", req.UserId).
 		Where("cd.card_id = ? and cd.status = 1", req.CardId).
 		Offset((req.PageNo - 1) * req.PageSize).

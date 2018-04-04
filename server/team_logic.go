@@ -91,5 +91,121 @@ func (s *Server) NewTeamProduction(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
+	req := &mysql.TeamProduction{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("newTeamProduction json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if req.TeamId == 0 {
+		Response.Msg = "teamId can not be empty."
+		log.Printf("%v : [%v]", Response.Msg, req)
+		return
+	}
+	if ok := mysql.NewTeamProduction(req); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
 
+/**
+	TODO: 删除团队作品
+ */
+func (s *Server) DelTeamProduction(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.DelProduction{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("delTeamProduction json decode err: [%v]", err)
+		Response.Msg =  config.ERROR_MSG
+		return
+	}
+	if Ok := mysql.DelTeamProduction(req.ProductionId); !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 获取团队作品列表
+ */
+func (s *Server) GetTeamProductionList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetTeamProduction{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getTeamProductionList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, ok := mysql.GetTeamProductionList(req)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 团队作品点赞
+ */
+func (s *Server) ClickLikeTeamProduction(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.ClickTeamProduction{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("clickLikeTeamProduction json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if ok := mysql.ClickLikeTeamProduction(req); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 搜索团队
+ */
+func (s *Server) SearchTeam(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.SearchTeam{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("searchTeam json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, ok := mysql.SearchTeamModel(req.Name)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 申请加入团队
+ */
+func (s *Server) ApplyJoinTeam(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetTeamInfo{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("applyJoinTeam json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	
 }
