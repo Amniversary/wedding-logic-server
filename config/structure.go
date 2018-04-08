@@ -14,6 +14,24 @@ type GetMyCard struct {
 	UserId int64 `json:"userId"`
 }
 
+type GetCardInfoRes struct {
+	ID           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
+	Name         string `json:"name"`
+	Phone        string `json:"phone"`
+	Pic          string `json:"pic"`
+	Qrcode       string `json:"qrcode"`
+	BgPic        string `json:"bg_pic"`
+	Professional string `json:"professional"`
+	Company      string `json:"company"`
+	Site         string `json:"site"`
+	Explain      string `json:"explain"`
+	Fame         int64  `json:"fame"`
+	Like         int64  `json:"like"`
+	Production   int64  `json:"production"`
+	Schedule     int64  `json:"schedule"`
+}
+
 type ProductionClickLike struct {
 	CardId       int64 `json:"cardId"`
 	UserId       int64 `json:"userId"`

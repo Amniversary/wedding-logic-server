@@ -36,26 +36,38 @@ func UpdateCardModel(card *Card) bool {
 	return true
 }
 
-func GetUserCardInfo(userId int64, cardId int64) (*Card, error) {
-	card := &Card{}
-	if err := db.Where("id = ?",cardId).First(&card).Error; err != nil {
+func GetUserCardInfo(userId int64, cardId int64) (*config.GetCardInfoRes, error) {
+	card := &config.GetCardInfoRes{}
+	if err := db.Table("Card").Where("id = ?",cardId).Find(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
-		return card, err
+		return nil, err
 	}
+	var count int64
+	if err := db.Model(&Schedule{}).Where("user_id = ? and pay_status = 1", userId).Count(&count).Error; err != nil {
+		log.Printf("getCountSchedule query err: [%v]", err)
+		return nil, err
+	}
+	card.Schedule = count
 	if card.UserId != userId {
 		if _, err := CreateCollect(cardId, userId); err != nil {
-			return card, err
+			return nil, err
 		}
 	}
 	return card, nil
 }
 
-func GetMyCardInfo(userId int64) (*Card, bool) {
-	card := &Card{}
-	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
+func GetMyCardInfo(userId int64) (*config.GetCardInfoRes, bool) {
+	card := &config.GetCardInfoRes{}
+	if err := db.Table("Card").Where("user_id = ?", userId).Find(&card).Error; err != nil {
 		log.Printf("getMyCardInfo query err: [%v]", err)
 		return nil, false
 	}
+	var count int64
+	if err := db.Model(&Schedule{}).Where("user_id = ? and pay_status = 1", userId).Count(&count).Error; err != nil {
+		log.Printf("getCountSchedule query err: [%v]", err)
+		return nil, false
+	}
+	card.Schedule = count
 	return card, true
 }
 
