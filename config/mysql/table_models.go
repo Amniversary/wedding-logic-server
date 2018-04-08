@@ -43,7 +43,7 @@ func (Collection) TableName() string {
 
 type Production struct {
 	ID       int64  `gorm:"primary_key" json:"id"`
-	CardId   int64  `gorm:"not null;default:0;type:int;index" json:"card_id"`
+	CardId   int64  `gorm:"not null;default:0;type:int;index" json:"cardId"`
 	Content  string `gorm:"not null;type:text" json:"content"`
 	Pic      string `gorm:"not null;type:text" json:"pic"`
 	Like     int64  `gorm:"not null;default:0;type:int" json:"like"`

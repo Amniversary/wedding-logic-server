@@ -88,6 +88,11 @@ func (s *Server) NewProduction(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	if req.CardId == 0 {
+		log.Printf("params can not empty: [%v]", req)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
 	if ok := mysql.CreateProduction(req); !ok {
 		Response.Msg = config.ERROR_MSG
 		return

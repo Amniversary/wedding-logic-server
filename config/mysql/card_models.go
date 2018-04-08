@@ -67,6 +67,7 @@ func GetMyCardInfo(userId int64) (*config.GetCardInfoRes, bool) {
 		log.Printf("getCountSchedule query err: [%v]", err)
 		return nil, false
 	}
+	log.Printf("%v", count)
 	card.Schedule = count
 	return card, true
 }
