@@ -75,6 +75,11 @@ func (s *Server) GetCardInfo(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	if req.CardId == 0 {
+		Response.Msg = config.ERROR_MSG
+		log.Printf("request: [%v]", req)
+		return
+	}
 	card, err := mysql.GetUserCardInfo(req.UserId, req.CardId)
 	if err != nil {
 		Response.Msg = config.ERROR_MSG
@@ -96,6 +101,11 @@ func (s *Server) GetMyCardInfo(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("getCardInfo json decode err: [%v]", err)
 		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if req.UserId == 0 {
+		Response.Msg = config.ERROR_MSG
+		log.Printf("request: [%v]", req)
 		return
 	}
 	info, ok := mysql.GetMyCardInfo(req.UserId)
