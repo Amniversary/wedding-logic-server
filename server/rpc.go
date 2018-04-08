@@ -80,6 +80,9 @@ func (s *Server) initMap() {
 		"getTeamProductionList":   s.GetTeamProductionList,
 		"clickLikeTeamProduction": s.ClickLikeTeamProduction,
 		"searchTeam":              s.SearchTeam,
+		"applyJoinTeam":           s.ApplyJoinTeam,
+		"applyJoinList":           s.ApplyJoinList,
+
 	}
 	s.methodMap = MethodMap
 }

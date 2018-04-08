@@ -134,6 +134,11 @@ type GetTeamInfo struct {
 	TeamID int64 `json:"teamId"`
 }
 
+type GetApplyInfo struct {
+	TeamId int64 `json:"teamId"`
+	UserId int64 `json:"userId"`
+}
+
 type ClickTeamProduction struct {
 	ProductionId int64 `json:"productionId"`
 	UserId       int64 `json:"userId"`
@@ -156,4 +161,16 @@ type SearchTeamList struct {
 	Name      string `json:"name"`
 	Pic       string `json:"pic"`
 	CreatedAt int64  `json:"created_at"`
+}
+
+type ApplyJoinList struct {
+	ID        int64  `json:"id"`
+	UserId    int64  `json:"user_id"`
+	Name      string `json:"name"`
+	CreatedAt int64  `json:"created_at"`
+}
+
+type UpJoinStatus struct {
+	ID     int64 `json:"id"`
+	Status int64 `json:"status"`
 }

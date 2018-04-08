@@ -183,11 +183,11 @@ func (TeamClickProduction) TableName() string {
 }
 
 type ApplyList struct {
-	ID        int64 `json:"id"`
-	TeamId    int64 `json:"team_id"`
-	UserId    int64 `json:"user_id"`
-	Status    int64 `json:"status"`
-	CreatedAt int64 `json:"created_at"`
+	ID        int64 `gorm:"primary_key" json:"id"`
+	TeamId    int64 `gorm:"not null;default:0;type:int;index" json:"team_id"`
+	UserId    int64 `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Status    int64 `gorm:"not null;default:2;type:int" json:"status"`
+	CreatedAt int64 `gorm:"not null;default:0;type:int" json:"created_at"`
 }
 
 /**

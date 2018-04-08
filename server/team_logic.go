@@ -201,11 +201,57 @@ func (s *Server) ApplyJoinTeam(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
-	req := &config.GetTeamInfo{}
+	req := &config.GetApplyInfo{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("applyJoinTeam json decode err: [%v]", err)
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	
+	if ok := mysql.ApplyJoin(req.UserId, req.TeamId); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 获取申请列表
+ */
+func (s *Server) ApplyJoinList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetTeamInfo{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("applyJoinList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, ok := mysql.GetApplyJoinList(req.TeamID)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 修改申请状态
+ */
+func (s *Server) UpJoinStatus(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.UpJoinStatus{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("upJoinStatus json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if ok := mysql.UpdateJoinStatus(req); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
 }

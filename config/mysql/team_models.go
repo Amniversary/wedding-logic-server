@@ -124,10 +124,54 @@ func SearchTeamModel(name string) ([]config.SearchTeamList, bool) {
 	var list []config.SearchTeamList
 	err := db.Table("Team").
 		Select("id, name, pic, created_at").
-		Where("name like ?", name + "%").Find(&list).Error
+		Where("name like ?", name+"%").Find(&list).Error
 	if err != nil {
 		log.Printf("searchTeamModel query err: [%v]", err)
 		return nil, false
 	}
 	return list, true
+}
+
+func ApplyJoin(userId int64, teamId int64) bool {
+	apply := &ApplyList{}
+	if err := db.Where("team_id = ? and user_id = ?", teamId, userId).First(&apply).Error; err != nil {
+		if apply.ID == 0 {
+			applyInfo := &ApplyList{TeamId: teamId, UserId: userId, Status: 2, CreatedAt: time.Now().Unix()}
+			if err := db.Create(&applyInfo).Error; err != nil {
+				log.Printf("create applyJoinList err: [%v]", err)
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func GetApplyJoinList(teamId int64) ([]config.ApplyJoinList, bool) {
+	var list []config.ApplyJoinList
+	err := db.Table("ApplyList al").
+		Joins("inner join Card c on al.user_id = c.user_id").
+		Select("al.id, al.user_id, c.name, al.created_at").
+		Where("al.team_id = ?", teamId).Find(&list).Error
+	if err != nil {
+		log.Printf("getApplyJoinList query err: [%v]", err)
+		return nil, false
+	}
+	return list, true
+}
+
+func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
+	apply := &ApplyList{}
+	if err := db.Where("id = ?", req.ID).First(&apply).Error; err != nil {
+		log.Printf("updateJoinStatus select query err: [%v]", err)
+		return false
+	}
+	if apply.Status == req.Status {
+		return true
+	}
+	err := db.Where("id = ?", req.ID).Table("ApplyList").Update("status = ?", req.Status).Error
+	if err != nil {
+		log.Printf("updateJoinStatus up query err: [%v]", err)
+		return false
+	}
+	return true
 }
