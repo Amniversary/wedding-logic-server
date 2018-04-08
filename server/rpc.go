@@ -82,6 +82,7 @@ func (s *Server) initMap() {
 		"searchTeam":              s.SearchTeam,
 		"applyJoinTeam":           s.ApplyJoinTeam,
 		"applyJoinList":           s.ApplyJoinList,
+		"getTeamList":             s.GetTeamList,
 	}
 	s.methodMap = MethodMap
 }

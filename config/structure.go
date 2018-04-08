@@ -57,11 +57,11 @@ type GetProductionList struct {
 }
 
 type ProductionList struct {
-	ID        int64  `json:"id"`
-	Content   string `json:"content"`
-	Pic       string `json:"pic"`
-	Like      int64  `json:"like"`
-	IsClick   int64  `json:"is_click"`
+	ID       int64  `json:"id"`
+	Content  string `json:"content"`
+	Pic      string `json:"pic"`
+	Like     int64  `json:"like"`
+	IsClick  int64  `json:"is_click"`
 	CreateAt int64  `json:"create_at"`
 }
 
@@ -113,7 +113,7 @@ type GetUserScheduleListRes struct {
 	ID        int64  `json:"id"`
 	Theme     string `json:"theme"`
 	TimeFrame string `json:"time_frame"`
-	CreateAt int64  `json:"create_at"`
+	CreateAt  int64  `json:"create_at"`
 }
 
 type GetScheduleInfo struct {
@@ -139,7 +139,7 @@ type NewCooperationInfo struct {
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
-	CreateAt    int64  `json:"create_at"`
+	CreateAt     int64  `json:"create_at"`
 }
 
 type NewTeam struct {
@@ -175,20 +175,28 @@ type SearchTeam struct {
 }
 
 type SearchTeamList struct {
-	ID        int64  `json:"id"`
-	Name      string `json:"name"`
-	Pic       string `json:"pic"`
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	Pic      string `json:"pic"`
 	CreateAt int64  `json:"create_at"`
 }
 
 type ApplyJoinList struct {
-	ID        int64  `json:"id"`
-	UserId    int64  `json:"user_id"`
-	Name      string `json:"name"`
+	ID       int64  `json:"id"`
+	UserId   int64  `json:"user_id"`
+	Name     string `json:"name"`
 	CreateAt int64  `json:"create_at"`
 }
 
 type UpJoinStatus struct {
 	ID     int64 `json:"id"`
 	Status int64 `json:"status"`
+}
+
+type GetTeamList struct {
+	ID           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
+	Name         string `json:"name"`
+	Pic          string `json:"pic"`
+	Professional string `json:"professional"`
 }

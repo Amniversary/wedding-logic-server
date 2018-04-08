@@ -176,6 +176,16 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 	return true
 }
 
-func GetTeamList(teamId int64) {
-
+func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
+	var list []config.GetTeamList
+	err := db.Select("ap.id, ap.user_id, name, pic, professional").
+		Table("ApplyList ap").
+		Joins("inner join Card c on ap.user_id = c.user_id").
+		Where("team_id = ? and status = 1", teamId).Find(&list).Error
+	if err != nil {
+		log.Printf("getTeamList query err : [%v]", err)
+		return nil, false
+	}
+	log.Printf("%v", list)
+	return list, true
 }

@@ -8,10 +8,11 @@ import (
 	"github.com/Amniversary/wedding-logic-server/config"
 	"github.com/Amniversary/wedding-logic-server/config/mysql"
 )
+
 /**
 	TODO: 创建团队
  */
-func (s *Server) NewTeam(w http.ResponseWriter,r *http.Request) {
+func (s *Server) NewTeam(w http.ResponseWriter, r *http.Request) {
 	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
@@ -36,6 +37,7 @@ func (s *Server) NewTeam(w http.ResponseWriter,r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 获取团队信息
  */
@@ -58,6 +60,7 @@ func (s *Server) GetTeamInfo(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 	Response.Data = info
 }
+
 /**
 	TODO: 更新团队信息
  */
@@ -83,11 +86,12 @@ func (s *Server) UpTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 上传团队作品
  */
 func (s *Server) NewTeamProduction(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -120,7 +124,7 @@ func (s *Server) DelTeamProduction(w http.ResponseWriter, r *http.Request) {
 	req := &config.DelProduction{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("delTeamProduction json decode err: [%v]", err)
-		Response.Msg =  config.ERROR_MSG
+		Response.Msg = config.ERROR_MSG
 		return
 	}
 	if Ok := mysql.DelTeamProduction(req.ProductionId); !Ok {
@@ -129,6 +133,7 @@ func (s *Server) DelTeamProduction(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 获取团队作品列表
  */
@@ -151,11 +156,12 @@ func (s *Server) GetTeamProductionList(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 团队作品点赞
  */
 func (s *Server) ClickLikeTeamProduction(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -171,6 +177,7 @@ func (s *Server) ClickLikeTeamProduction(w http.ResponseWriter, r *http.Request)
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 搜索团队
  */
@@ -193,6 +200,7 @@ func (s *Server) SearchTeam(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 申请加入团队
  */
@@ -213,11 +221,12 @@ func (s *Server) ApplyJoinTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 获取申请列表
  */
 func (s *Server) ApplyJoinList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -235,11 +244,12 @@ func (s *Server) ApplyJoinList(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 修改申请状态
  */
 func (s *Server) UpJoinStatus(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -255,11 +265,12 @@ func (s *Server) UpJoinStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 获取成员列表
  */
 func (s *Server) GetTeamList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -269,5 +280,16 @@ func (s *Server) GetTeamList(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	if req.TeamID == 0 {
+		log.Printf("params can not be empty: [%v]", req)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, ok := mysql.GetTeamList(req.TeamID)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
