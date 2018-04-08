@@ -175,3 +175,7 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 	}
 	return true
 }
+
+func GetTeamList(teamId int64) {
+
+}

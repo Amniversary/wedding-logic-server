@@ -255,3 +255,19 @@ func (s *Server) UpJoinStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+/**
+	TODO: 获取成员列表
+ */
+func (s *Server) GetTeamList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetTeamInfo{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getTeamList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}

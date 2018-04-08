@@ -203,13 +203,13 @@ func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 
 func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
-	err := db.Table("Production pd").
-		Select("pd.id, content, pic, like, create_at, ifnull(cp.status, 0) as is_click").
+	err := db.Select("pd.id, content, pic, `like`, pd.create_at, ifnull(cp.status, 0) as is_click").
+		Table("Production pd").
 		Joins("left join ClickProduction cp on pd.id=cp.production_id and user_id = ?", req.UserId).
-		Where("cd.card_id = ? and cd.status = 1", req.CardId).
+		Where("pd.card_id = ? and pd.status = 1", req.CardId).
 		Offset((req.PageNo - 1) * req.PageSize).
 		Limit(req.PageSize).
-		Order("cd.create_at desc").Find(&list).Error
+		Order("pd.create_at desc").Find(&list).Error
 	if err != nil {
 		log.Printf("select [GetProductionList] err: %v", err)
 		return nil, false
