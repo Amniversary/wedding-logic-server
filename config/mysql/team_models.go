@@ -9,7 +9,7 @@ import (
 )
 
 func NewTeam(req *config.NewTeam) bool {
-	team := &Team{UserId: req.UserId, Name: req.Name, Pic: req.Pic, CreatedAt: time.Now().Unix()}
+	team := &Team{UserId: req.UserId, Name: req.Name, Pic: req.Pic, CreateAt: time.Now().Unix()}
 	if err := db.Create(&team).Error; err != nil {
 		log.Printf("create team model err : [%v]", err)
 		return false
@@ -20,7 +20,7 @@ func NewTeam(req *config.NewTeam) bool {
 func GetTeamInfo(teamId int64) (*Team, bool) {
 	team := &Team{}
 	if err := db.Where("id = ?", teamId).
-		Select("`id`, `name`, `pic`, `cover`, `explain`, `created_at`").
+		Select("`id`, `name`, `pic`, `cover`, `explain`, `create_at`").
 		First(&team).Error; err != nil {
 		log.Printf("getTeamInfo query err: [%v]", err)
 		return nil, false
@@ -29,7 +29,7 @@ func GetTeamInfo(teamId int64) (*Team, bool) {
 }
 
 func UpTeamInfo(req *Team) bool {
-	req.CreatedAt = time.Now().Unix()
+	req.CreateAt = time.Now().Unix()
 	if err := db.Table("Team").Where("id = ?", req.ID).Update(&req).Error; err != nil {
 		log.Printf("upTeam query err : [%v]", err)
 		return false
@@ -38,7 +38,7 @@ func UpTeamInfo(req *Team) bool {
 }
 
 func NewTeamProduction(req *TeamProduction) bool {
-	req.CreatedAt = time.Now().Unix()
+	req.CreateAt = time.Now().Unix()
 	req.Status = 1
 	if err := db.Create(&req).Error; err != nil {
 		log.Printf("newTeamProduction create err : [%v]", err)
@@ -61,7 +61,7 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 	if err != nil {
 		if production.ID == 0 {
 			tx := db.Begin()
-			clickProduction := &TeamClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE, CreatedAt: time.Now().Unix()}
+			clickProduction := &TeamClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE, CreateAt: time.Now().Unix()}
 			if err := tx.Create(&clickProduction).Error; err != nil {
 				log.Printf("create click production err : [%v]", err)
 				tx.Rollback()
@@ -107,7 +107,7 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 func GetTeamProductionList(req *config.GetTeamProduction) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("TeamProduction tp").
-		Select("tp.id, content, pic, like, created_at, ifnull(cp.status, 0) as is_click").
+		Select("tp.id, content, pic, like, create_at, ifnull(cp.status, 0) as is_click").
 		Joins("left join TeamClickProduction cp on tp.id=cp.production_id and user_id = ?", req.UserId).
 		Where("tp.team_id = ? and cd.status = 1", req.TeamId).
 		Offset((req.PageNo - 1) * req.PageSize).
@@ -123,7 +123,7 @@ func GetTeamProductionList(req *config.GetTeamProduction) ([]config.ProductionLi
 func SearchTeamModel(name string) ([]config.SearchTeamList, bool) {
 	var list []config.SearchTeamList
 	err := db.Table("Team").
-		Select("id, name, pic, created_at").
+		Select("id, name, pic, create_at").
 		Where("name like ?", name+"%").Find(&list).Error
 	if err != nil {
 		log.Printf("searchTeamModel query err: [%v]", err)
@@ -136,7 +136,7 @@ func ApplyJoin(userId int64, teamId int64) bool {
 	apply := &ApplyList{}
 	if err := db.Where("team_id = ? and user_id = ?", teamId, userId).First(&apply).Error; err != nil {
 		if apply.ID == 0 {
-			applyInfo := &ApplyList{TeamId: teamId, UserId: userId, Status: 2, CreatedAt: time.Now().Unix()}
+			applyInfo := &ApplyList{TeamId: teamId, UserId: userId, Status: 2, CreateAt: time.Now().Unix()}
 			if err := db.Create(&applyInfo).Error; err != nil {
 				log.Printf("create applyJoinList err: [%v]", err)
 				return false
@@ -150,7 +150,7 @@ func GetApplyJoinList(teamId int64) ([]config.ApplyJoinList, bool) {
 	var list []config.ApplyJoinList
 	err := db.Table("ApplyList al").
 		Joins("inner join Card c on al.user_id = c.user_id").
-		Select("al.id, al.user_id, c.name, al.created_at").
+		Select("al.id, al.user_id, c.name, al.create_at").
 		Where("al.team_id = ?", teamId).Find(&list).Error
 	if err != nil {
 		log.Printf("getApplyJoinList query err: [%v]", err)

@@ -75,9 +75,9 @@ func (s *Server) GetCardInfo(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	if req.CardId == 0 {
+	if req.CardId == 0 || req.UserId == 0 {
 		Response.Msg = config.ERROR_MSG
-		log.Printf("request: [%v]", req)
+		log.Printf("params can not be empty: [%v]", req)
 		return
 	}
 	card, err := mysql.GetUserCardInfo(req.UserId, req.CardId)
@@ -105,7 +105,7 @@ func (s *Server) GetMyCardInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.UserId == 0 {
 		Response.Msg = config.ERROR_MSG
-		log.Printf("request: [%v]", req)
+		log.Printf("cardId can not be empty: [%v]", req)
 		return
 	}
 	info, ok := mysql.GetMyCardInfo(req.UserId)
@@ -172,10 +172,10 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := time.Now().Unix()
-	time := t - res.CreatedAt
+	time := t - res.CreateAt
 	if time > 600 {
 		Response.Msg = "验证码已过期, 请重新获取 !"
-		log.Printf("%v : %v - %v = [%v]", Response.Msg, t, res.CreatedAt, time)
+		log.Printf("%v : %v - %v = [%v]", Response.Msg, t, res.CreateAt, time)
 		return
 	}
 	if res.Code != req.Code {

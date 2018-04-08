@@ -20,7 +20,7 @@ func NewSchedule(req *config.NewSchedule) bool {
 		TotalPrice: req.TotalPrice,
 		PayStatus:  req.PayStatus,
 		Status:     1,
-		CreatedAt:  time.Now().Unix(),
+		CreateAt:  time.Now().Unix(),
 	}
 	tx := db.Begin()
 	if err := tx.Create(&schedule).Error; err != nil {
@@ -35,7 +35,7 @@ func NewSchedule(req *config.NewSchedule) bool {
 				Professional: v.Professional,
 				Name:         v.Name,
 				Phone:        v.Phone,
-				CreatedAt:    time.Now().Unix(),
+				CreateAt:    time.Now().Unix(),
 			}).Error
 			if err != nil {
 				tx.Rollback()
@@ -80,7 +80,7 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 				Professional: v.Professional,
 				Name:         v.Name,
 				Phone:        v.Phone,
-				CreatedAt:    time.Now().Unix(),
+				CreateAt:    time.Now().Unix(),
 			}).Error
 			if err != nil {
 				tx.Rollback()
@@ -97,7 +97,7 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 func GetUserScheduleList(userId int64) ([]config.GetUserScheduleListRes, bool) {
 	var list []config.GetUserScheduleListRes
 	err := db.Table("Schedule").
-		Select("id, theme, time_frame, created_at").
+		Select("id, theme, time_frame, create_at").
 		Where("user_id = ? and status = 1", userId).Find(&list).Error
 	if err != nil {
 		log.Printf("getUserScheduleList err : [%v]", err)
@@ -117,7 +117,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 		return nil, false
 	}
 	err = db.Table("Cooperation").
-		Select("id, professional, name, phone, created_at").
+		Select("id, professional, name, phone, create_at").
 		Where("schedule_id = ?", scheduleId).Find(&newSchedule).Error
 	if err != nil {
 		log.Printf("select Cooperation query err: [%v]", err)

@@ -15,8 +15,8 @@ type Card struct {
 	Fame         int64  `gorm:"not null;default:0;type:int" json:"fame"`
 	Like         int64  `gorm:"not null;default:0;type:int" json:"like"`
 	Production   int64  `gorm:"not null;default:0;type:int" json:"production"`
-	CreatedAt    int64  `gorm:"not null;default:0;type:int" json:"-"`
-	UpdatedAt    int64  `gorm:"not null;default:0;type:int" json:"-"`
+	CreateAt     int64  `gorm:"not null;default:0;type:int" json:"create_at"`
+	UpdateAt     int64  `gorm:"not null;default:0;type:int" json:"update_at"`
 }
 
 /**
@@ -27,11 +27,11 @@ func (Card) TableName() string {
 }
 
 type Collection struct {
-	ID        int64 `gorm:"primary_key" json:"id"`
-	UserId    int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"userId"`
-	CardId    int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"cardId"`
-	Status    int64 `gorm:"not null;default:1;type:int" json:"status"`
-	CreatedAt int64 `gorm:"not null;default:0;type:int" json:"created_at"`
+	ID       int64 `gorm:"primary_key" json:"id"`
+	UserId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"userId"`
+	CardId   int64 `gorm:"not null;default:0;type:int;unique_index:UserId_CardId" json:"cardId"`
+	Status   int64 `gorm:"not null;default:1;type:int" json:"status"`
+	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -42,13 +42,13 @@ func (Collection) TableName() string {
 }
 
 type Production struct {
-	ID        int64  `gorm:"primary_key" json:"id"`
-	CardId    int64  `gorm:"not null;default:0;type:int;index" json:"card_id"`
-	Content   string `gorm:"not null;type:text" json:"content"`
-	Pic       string `gorm:"not null;type:text" json:"pic"`
-	Like      int64  `gorm:"not null;default:0;type:int" json:"like"`
-	Status    int64  `gorm:"not null;default:1;type:int;index" json:"-"`
-	CreatedAt int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+	ID       int64  `gorm:"primary_key" json:"id"`
+	CardId   int64  `gorm:"not null;default:0;type:int;index" json:"card_id"`
+	Content  string `gorm:"not null;type:text" json:"content"`
+	Pic      string `gorm:"not null;type:text" json:"pic"`
+	Like     int64  `gorm:"not null;default:0;type:int" json:"like"`
+	Status   int64  `gorm:"not null;default:1;type:int;index" json:"-"`
+	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -63,7 +63,7 @@ type ClickProduction struct {
 	UserId       int64  `gorm:"not null;default:0;type:int;index" json:"userId"`
 	ProductionId int64  `gorm:"not null;default:0;type:int;index" json:"productionId"`
 	Status       int64  `gorm:"not null;default:1;type:int" json:"status"`
-	CreatedAt    int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+	CreateAt     int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -74,17 +74,17 @@ func (ClickProduction) TableName() string {
 }
 
 type SmsMessage struct {
-	ID        int64  `gorm:"primary_key" json:"id"`
-	UserId    int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
-	Phone     string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
-	Count     int64  `gorm:"not null;default:0;type:int" json:"count"`
-	Fee       int64  `gorm:"not null;default:0;type:int" json:"fee"`
-	Type      int64  `gorm:"not null;default:0;type:int" json:"type"`
-	Code      string `gorm:"not null;default:'';type:varchar(64)" json:"code"`
-	Sid       string `gorm:"not null;default:'';type:varchar(256)" json:"sid"`
-	Text      string `gorm:"not null;default:'';type:varchar(256)" json:"text"`
-	Status    int64  `gorm:"not null;default:0;type:int;index" json:"status"`
-	CreatedAt int64  `gorm:"not null;default:0;type:int;" json:"created_at"`
+	ID       int64  `gorm:"primary_key" json:"id"`
+	UserId   int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Phone    string `gorm:"not null;default:'';type:varchar(64)" json:"phone"`
+	Count    int64  `gorm:"not null;default:0;type:int" json:"count"`
+	Fee      int64  `gorm:"not null;default:0;type:int" json:"fee"`
+	Type     int64  `gorm:"not null;default:0;type:int" json:"type"`
+	Code     string `gorm:"not null;default:'';type:varchar(64)" json:"code"`
+	Sid      string `gorm:"not null;default:'';type:varchar(256)" json:"sid"`
+	Text     string `gorm:"not null;default:'';type:varchar(256)" json:"text"`
+	Status   int64  `gorm:"not null;default:0;type:int;index" json:"status"`
+	CreateAt int64  `gorm:"not null;default:0;type:int;" json:"create_at"`
 }
 
 /**
@@ -107,7 +107,7 @@ type Schedule struct {
 	TotalPrice float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"total_money"`
 	PayStatus  int64   `gorm:"not null;default:0;type:int" json:"pay_status"`
 	Status     int64   `gorm:"not null;default:1;type:int;index" json:"status"`
-	CreatedAt  int64   `gorm:"not null;default:0;type:int" json:"created_at"`
+	CreateAt   int64   `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -123,7 +123,7 @@ type Cooperation struct {
 	Professional string `gorm:"not null;default:'';type:varchar(128)" json:"professional"`
 	Name         string `gorm:"not null;default:'';type:varchar(128)" json:"name"`
 	Phone        string `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
-	CreatedAt    int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+	CreateAt     int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -134,13 +134,13 @@ func (Cooperation) TableName() string {
 }
 
 type Team struct {
-	ID        int64  `gorm:"primary_key" json:"id"`
-	UserId    int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
-	Pic       string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
-	Name      string `gorm:"not null;default:'';type:varchar(128);index" json:"name"`
-	Cover     string `gorm:"not null;default:'';type:varchar(512)" json:"cover"`
-	Explain   string `gorm:"not null;default:'';type:varchar(512)" json:"explain"`
-	CreatedAt int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+	ID       int64  `gorm:"primary_key" json:"id"`
+	UserId   int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Pic      string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
+	Name     string `gorm:"not null;default:'';type:varchar(128);index" json:"name"`
+	Cover    string `gorm:"not null;default:'';type:varchar(512)" json:"cover"`
+	Explain  string `gorm:"not null;default:'';type:varchar(512)" json:"explain"`
+	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -151,13 +151,13 @@ func (Team) TableName() string {
 }
 
 type TeamProduction struct {
-	ID        int64  `gorm:"primary_key" json:"id"`
-	TeamId    int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
-	Content   string `gorm:"not null;default:'';type:text" json:"content"`
-	Pic       string `gorm:"not null;default:'';type:text" json:"pic"`
-	Like      int64  `gorm:"not null;default:0;type:int" json:"like"`
-	Status    int64  `gorm:"not null;default:0;type:int" json:"status"`
-	CreatedAt int64  `gorm:"not null;default:0;type:int" json:"created_at"`
+	ID       int64  `gorm:"primary_key" json:"id"`
+	TeamId   int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
+	Content  string `gorm:"not null;default:'';type:text" json:"content"`
+	Pic      string `gorm:"not null;default:'';type:text" json:"pic"`
+	Like     int64  `gorm:"not null;default:0;type:int" json:"like"`
+	Status   int64  `gorm:"not null;default:0;type:int" json:"status"`
+	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -172,7 +172,7 @@ type TeamClickProduction struct {
 	UserId       int64 `gorm:"not null;default:0;type:int;index" json:"userId"`
 	ProductionId int64 `gorm:"not null;default:0;type:int;index" json:"productionId"`
 	Status       int64 `gorm:"not null;default:1;type:int" json:"status"`
-	CreatedAt    int64 `gorm:"not null;default:0;type:int" json:"created_at"`
+	CreateAt     int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**
@@ -183,11 +183,11 @@ func (TeamClickProduction) TableName() string {
 }
 
 type ApplyList struct {
-	ID        int64 `gorm:"primary_key" json:"id"`
-	TeamId    int64 `gorm:"not null;default:0;type:int;index" json:"team_id"`
-	UserId    int64 `gorm:"not null;default:0;type:int;index" json:"user_id"`
-	Status    int64 `gorm:"not null;default:2;type:int" json:"status"`
-	CreatedAt int64 `gorm:"not null;default:0;type:int" json:"created_at"`
+	ID       int64 `gorm:"primary_key" json:"id"`
+	TeamId   int64 `gorm:"not null;default:0;type:int;index" json:"team_id"`
+	UserId   int64 `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Status   int64 `gorm:"not null;default:2;type:int" json:"status"`
+	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
 /**

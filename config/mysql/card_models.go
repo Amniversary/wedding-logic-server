@@ -15,8 +15,8 @@ const (
 )
 
 func CreateCard(card *Card) (error) {
-	card.UpdatedAt = time.Now().Unix()
-	card.CreatedAt = time.Now().Unix()
+	card.UpdateAt = time.Now().Unix()
+	card.CreateAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
 		log.Printf("Create Card Model error: %v", err)
 		return err
@@ -28,6 +28,7 @@ func CreateCard(card *Card) (error) {
 }
 
 func UpdateCardModel(card *Card) bool {
+	card.UpdateAt = time.Now().Unix()
 	if err := db.Table("Card").Where("id = ? and user_id = ?", card.ID, card.UserId).Update(&card).Error; err != nil {
 		log.Printf("update card err : %v, [%v]", err, card)
 		return false
@@ -37,7 +38,7 @@ func UpdateCardModel(card *Card) bool {
 
 func GetUserCardInfo(userId int64, cardId int64) (*Card, error) {
 	card := &Card{}
-	if err := db.Where("id = ? and user_id = ?",cardId ,userId).First(&card).Error; err != nil {
+	if err := db.Where("id = ?",cardId).First(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
 		return card, err
 	}
@@ -64,12 +65,12 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 		log.Printf("select collect err : %v", err)
 	}
 	if collect.ID == 0 {
-		collect.CreatedAt = time.Now().Unix()
+		collect.CreateAt = time.Now().Unix()
 		if err := db.Create(&collect).Error; err != nil {
 			log.Printf("create collection error: %v", err)
 			return collect, err
 		}
-		if err := db.Model(&Card{}).Update("fame", gorm.Expr("fame + 1")).Where("card_id = ?", cardId).Error; err != nil {
+		if err := db.Model(&Card{}).Where("id = ?", cardId).Updates(map[string]interface{}{"fame":gorm.Expr("fame + 1"), "update_at":time.Now().Unix()}).Error; err != nil {
 			log.Printf("update card fame error: %v ,  cardId:[%d]", err, cardId)
 		}
 	}
@@ -77,7 +78,7 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 }
 
 func CreateProduction(production *Production) bool {
-	production.CreatedAt = time.Now().Unix()
+	production.CreateAt = time.Now().Unix()
 	tx := db.Begin()
 	if err := tx.Create(&production).Error; err != nil {
 		log.Printf("create dynamic model err : %v", err)
@@ -98,7 +99,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 	if err := db.Where("user_id = ? and production_id = ?", req.UserId, req.ProductionId).First(&click).Error; err != nil {
 		if click.ID == 0 {
 			tx := db.Begin()
-			clickProduction := &ClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE, CreatedAt: time.Now().Unix()}
+			clickProduction := &ClickProduction{UserId: req.UserId, ProductionId: req.ProductionId, Status: CLICK_LIKE, CreateAt: time.Now().Unix()}
 			if err := tx.Create(&clickProduction).Error; err != nil {
 				tx.Rollback()
 				log.Printf("create clickProduction err: [%v] ", err)
@@ -168,7 +169,7 @@ func DelProduction(productionId int64) bool {
 
 func CreateSMS(req *config.ValidateCode, vCode string) (*SmsMessage, bool) {
 	sms := &SmsMessage{UserId: req.UserId, Phone: req.Phone, Type: req.Type, Code: vCode}
-	sms.CreatedAt = time.Now().Unix()
+	sms.CreateAt = time.Now().Unix()
 	if err := db.Create(&sms).Error; err != nil {
 		log.Printf("create sms message err: %s", err)
 		return sms, false
@@ -189,7 +190,7 @@ func UpdateSMS(netReturn map[string]interface{}, sms *SmsMessage) bool {
 func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("Production pd").
-		Select("pd.id, content, pic, like, created_at, ifnull(cp.status, 0) as is_click").
+		Select("pd.id, content, pic, like, create_at, ifnull(cp.status, 0) as is_click").
 		Joins("left join ClickProduction cp on pd.id=cp.production_id and user_id = ?", req.UserId).
 		Where("cd.card_id = ? and cd.status = 1", req.CardId).
 		Offset((req.PageNo - 1) * req.PageSize).
@@ -204,7 +205,7 @@ func GetProductionList(req *config.GetProductionList) ([]config.ProductionList, 
 
 func GetUserCode(userId int64) (SmsMessage, error) {
 	sms := SmsMessage{}
-	err := db.Where("user_id = ? and status = 1", userId).Select("id, user_id, code, created_at").Order("id desc").Limit(1).Find(&sms).Error
+	err := db.Where("user_id = ? and status = 1", userId).Select("id, user_id, code, create_at").Order("id desc").Limit(1).Find(&sms).Error
 	if err != nil {
 		log.Printf("select user code err : %v", err)
 		return sms, err
