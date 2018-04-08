@@ -63,7 +63,7 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 		Phone:      req.Phone,
 	}
 	tx := db.Begin()
-	if err := tx.Table("Schedule").Where("id = ?", req.ID).Update(&schedule).Error; err != nil {
+	if err := tx.Table("Schedule").Where("id = ?", req.ID).Updates(&schedule).Error; err != nil {
 		tx.Rollback()
 		log.Printf("update Schedule err: [%v]", err)
 		return false
@@ -98,7 +98,7 @@ func GetUserScheduleList(userId int64) ([]config.GetUserScheduleListRes, bool) {
 	var list []config.GetUserScheduleListRes
 	err := db.Table("Schedule").
 		Select("id, theme, time_frame, create_at").
-		Where("user_id = ? and status = 1", userId).Find(&list).Error
+		Where("user_id = ? and status = 2", userId).Find(&list).Error
 	if err != nil {
 		log.Printf("getUserScheduleList err : [%v]", err)
 		return nil, false

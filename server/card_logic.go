@@ -132,6 +132,11 @@ func (s *Server) GetValidateCode(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	if req.Type == 0 {
+		log.Printf("params [type] can not be empty : [%v]", req)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
 	rands := rand.New(rand.NewSource(time.Now().UnixNano()))
 	num := fmt.Sprintf("%04d", rands.Int63n(9999))
 	vCode := "#code#=" + num

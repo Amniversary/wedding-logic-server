@@ -103,6 +103,7 @@ func CreateProduction(production *Production) bool {
 		tx.Rollback()
 		return false
 	}
+	tx.Commit()
 	return true
 }
 

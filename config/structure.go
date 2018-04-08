@@ -62,7 +62,7 @@ type ProductionList struct {
 	Pic       string `json:"pic"`
 	Like      int64  `json:"like"`
 	IsClick   int64  `json:"is_click"`
-	CreatedAt int64  `json:"created_at"`
+	CreateAt int64  `json:"create_at"`
 }
 
 type CheckValidateCode struct {
@@ -113,7 +113,7 @@ type GetUserScheduleListRes struct {
 	ID        int64  `json:"id"`
 	Theme     string `json:"theme"`
 	TimeFrame string `json:"time_frame"`
-	CreatedAt int64  `json:"created_at"`
+	CreateAt int64  `json:"create_at"`
 }
 
 type GetScheduleInfo struct {
@@ -139,7 +139,7 @@ type NewCooperationInfo struct {
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
-	CreatedAt    int64  `json:"created_at"`
+	CreateAt    int64  `json:"create_at"`
 }
 
 type NewTeam struct {
@@ -178,14 +178,14 @@ type SearchTeamList struct {
 	ID        int64  `json:"id"`
 	Name      string `json:"name"`
 	Pic       string `json:"pic"`
-	CreatedAt int64  `json:"created_at"`
+	CreateAt int64  `json:"create_at"`
 }
 
 type ApplyJoinList struct {
 	ID        int64  `json:"id"`
 	UserId    int64  `json:"user_id"`
 	Name      string `json:"name"`
-	CreatedAt int64  `json:"created_at"`
+	CreateAt int64  `json:"create_at"`
 }
 
 type UpJoinStatus struct {
