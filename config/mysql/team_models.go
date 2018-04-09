@@ -84,7 +84,7 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 		return true
 	}
 	tx := db.Begin()
-	if err := tx.Model(&TeamClickProduction{}).Update("status", req.Status).Error; err != nil {
+	if err := tx.Model(&TeamClickProduction{}).Where("user_id = ? and production_id = ?", req.UserId, req.ProductionId).Update("status", req.Status).Error; err != nil {
 		log.Printf("update click TeamProduction err : [%v], [ProductionId: %d, status: %d]", err, req.ProductionId, req.Status)
 		tx.Rollback()
 		return false
