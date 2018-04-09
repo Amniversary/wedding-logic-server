@@ -215,8 +215,14 @@ func (s *Server) ApplyJoinTeam(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	if ok := mysql.ApplyJoin(req.UserId, req.TeamId); !ok {
+	code := mysql.ApplyJoin(req.UserId, req.TeamId)
+	switch code {
+	case 1:
+		Response.Msg = "已加入团队, 无法申请"
+	case 2:
 		Response.Msg = config.ERROR_MSG
+	}
+	if code != 0 {
 		return
 	}
 	Response.Code = config.RESPONSE_OK

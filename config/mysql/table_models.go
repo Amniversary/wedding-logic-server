@@ -202,6 +202,7 @@ type TeamMembers struct {
 	ID       int64 `gorm:"primary_key" json:"id"`
 	TeamId   int64 `gorm:"not null;default:0;type:int;index" json:"team_id"`
 	UserId   int64 `gorm:"not null;default:0;type:int;index" json:"user_id"`
+	Type     int64 `gorm:"not null;default:0;type:int;" json:"type"`
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 

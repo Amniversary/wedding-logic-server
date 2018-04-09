@@ -200,3 +200,11 @@ type GetTeamList struct {
 	Pic          string `json:"pic"`
 	Professional string `json:"professional"`
 }
+
+type GetMessageList struct {
+	ID     int64  `json:"id"`
+	TeamId int64  `json:"team_id"`
+	Name   string `json:"name"`
+	Status int64  `json:"status"`
+	Type   int64  `json:"type"`
+}

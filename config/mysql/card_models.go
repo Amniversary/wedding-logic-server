@@ -38,7 +38,7 @@ func UpdateCardModel(card *Card) bool {
 
 func GetUserCardInfo(userId int64, cardId int64) (*config.GetCardInfoRes, error) {
 	card := &config.GetCardInfoRes{}
-	if err := db.Table("Card").Where("id = ?",cardId).Find(&card).Error; err != nil {
+	if err := db.Table("Card").Where("id = ?", cardId).Find(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 			log.Printf("create collection error: %v", err)
 			return collect, err
 		}
-		if err := db.Model(&Card{}).Where("id = ?", cardId).Updates(map[string]interface{}{"fame":gorm.Expr("fame + 1"), "update_at":time.Now().Unix()}).Error; err != nil {
+		if err := db.Model(&Card{}).Where("id = ?", cardId).Updates(map[string]interface{}{"fame": gorm.Expr("fame + 1"), "update_at": time.Now().Unix()}).Error; err != nil {
 			log.Printf("update card fame error: %v ,  cardId:[%d]", err, cardId)
 		}
 	}
@@ -225,4 +225,17 @@ func GetUserCode(userId int64) (SmsMessage, error) {
 		return sms, err
 	}
 	return sms, err
+}
+
+func GetMessageList(userId int64) ([]config.GetMessageList, bool) {
+	var list []config.GetMessageList
+	err := db.Table("ApplyList al").
+		Joins("inner join Team t on al.team_id = t.id").
+		Select("al.id, team_id, name, status, type").
+		Where("al.user_id = ? and status in (0,1)", userId).Find(&list).Error
+	if err != nil {
+		log.Printf("getMessageList query err: [%v]", err)
+		return nil, false
+	}
+	return list, true
 }

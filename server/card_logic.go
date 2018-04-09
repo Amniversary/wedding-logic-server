@@ -189,3 +189,25 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+/**
+	TODO: 消息列表
+ */
+func (s *Server) GetMessageList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetMyCard{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getMessageList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, ok := mysql.GetMessageList(req.UserId)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
