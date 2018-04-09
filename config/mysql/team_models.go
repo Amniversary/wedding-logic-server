@@ -67,7 +67,7 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 				tx.Rollback()
 				return false
 			}
-			err := tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like + 1"))
+			err := tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1")).Error
 			if err != nil {
 				log.Printf("update teamProduction like err: [%v]", err)
 				tx.Rollback()
@@ -91,9 +91,9 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 	}
 	switch req.Status {
 	case CANCEL_LIKE:
-		err = tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like - ?", 1)).Error
+		err = tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` - 1")).Error
 	case CLICK_LIKE:
-		err = tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("lick + ?", 1)).Error
+		err = tx.Model(&TeamProduction{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1")).Error
 	}
 	if err != nil {
 		log.Printf("update card TeamProduction like err : [%v], [ProductionId: %d]", err, req.ProductionId)
@@ -168,7 +168,7 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 	if apply.Status == req.Status {
 		return true
 	}
-	err := db.Where("id = ?", req.ID).Table("ApplyList").Update("status = ?", req.Status).Error
+	err := db.Where("id = ?", req.ID).Table("ApplyList").Update("status", req.Status).Error
 	if err != nil {
 		log.Printf("updateJoinStatus up query err: [%v]", err)
 		return false

@@ -118,13 +118,13 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 				log.Printf("create clickProduction err: [%v] ", err)
 				return false
 			}
-			err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like + ?", 1)).Error
+			err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1", )).Error
 			if err != nil {
 				tx.Rollback()
 				log.Printf("udpate Production like err : [%v] ", err)
 				return false
 			}
-			err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?", 1)).Error
+			err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("`like` + 1")).Error
 			if err != nil {
 				tx.Rollback()
 				log.Printf("update Card like err : [%v]", err)
@@ -149,19 +149,19 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 	var err error
 	switch req.Status {
 	case CANCEL_LIKE:
-		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like - ?", 1)).Error; err != nil {
+		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("`like` - 1")).Error; err != nil {
 			log.Printf("update card like err : [%v], [CardId: %d]", err, req.CardId)
 			tx.Rollback()
 			return false
 		}
-		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("like - ?", 1)).Error
+		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` - 1")).Error
 	case CLICK_LIKE:
-		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("like + ?", 1)).Error; err != nil {
+		if err = tx.Model(&Card{}).Where("id = ?", req.CardId).Update("like", gorm.Expr("`like` + 1")).Error; err != nil {
 			log.Printf("update card like err : [%v], [CardId: %d]", err, req.CardId)
 			tx.Rollback()
 			return false
 		}
-		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("lick + ?", 1)).Error
+		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`lick` + 1")).Error
 	}
 	if err != nil {
 		log.Printf("update card Production like err : [%v], [ProductionId: %d]", err, req.ProductionId)
