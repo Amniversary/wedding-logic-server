@@ -17,6 +17,8 @@ type GetMyCard struct {
 type GetCardInfoRes struct {
 	ID           int64  `json:"id"`
 	UserId       int64  `json:"user_id"`
+	TeamId       int64  `json:"team_id"`
+	Identity     int64  `json:"identity"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
 	Pic          string `json:"pic"`

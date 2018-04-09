@@ -58,7 +58,10 @@ func GetUserCardInfo(userId int64, cardId int64) (*config.GetCardInfoRes, error)
 
 func GetMyCardInfo(userId int64) (*config.GetCardInfoRes, bool) {
 	card := &config.GetCardInfoRes{}
-	if err := db.Table("Card").Where("user_id = ?", userId).Find(&card).Error; err != nil {
+	if err := db.Table("Card c").
+		Joins("left join TeamMembers tm on c.user_id = tm.user_id").
+		Select("c.id, c.user_id, name, phone, pic, qrcode, bg_pic, professional, company, site, `explain`, fame, `like`, production, ifnull(tm.team_id, 0) as team_id, ifnull(tm.type, 0) as identity").
+		Where("c.user_id = ?", userId).Find(&card).Error; err != nil {
 		log.Printf("getMyCardInfo query err: [%v]", err)
 		return nil, false
 	}

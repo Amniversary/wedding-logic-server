@@ -14,7 +14,6 @@ const (
 
 
 func NewTeam(req *config.NewTeam) bool {
-
 	team := &Team{UserId: req.UserId, Name: req.Name, Pic: req.Pic, CreateAt: time.Now().Unix()}
 	tx := db.Begin()
 	if err := tx.Create(&team).Error; err != nil {
