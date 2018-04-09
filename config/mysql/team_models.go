@@ -136,7 +136,7 @@ func ApplyJoin(userId int64, teamId int64) bool {
 	apply := &ApplyList{}
 	if err := db.Where("team_id = ? and user_id = ?", teamId, userId).First(&apply).Error; err != nil {
 		if apply.ID == 0 {
-			applyInfo := &ApplyList{TeamId: teamId, UserId: userId, Status: 2, CreateAt: time.Now().Unix()}
+			applyInfo := &ApplyList{TeamId: teamId, UserId: userId, Status: 2, CreateAt: time.Now().Unix(), Type: 1}
 			if err := db.Create(&applyInfo).Error; err != nil {
 				log.Printf("create applyJoinList err: [%v]", err)
 				return false
