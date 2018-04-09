@@ -173,7 +173,8 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 }
 
 func DelProduction(productionId int64) bool {
-	if err := db.Model(&Production{}).Where("id = ?", productionId).Update("status = 0").Error; err != nil {
+	log.Printf("productionId: [%v]", productionId)
+	if err := db.Model(&Production{}).Where("id = ?", productionId).Update("status", 0).Error; err != nil {
 		log.Printf("update Production status err : [%v]", err)
 		return false
 	}

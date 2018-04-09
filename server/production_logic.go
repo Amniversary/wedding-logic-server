@@ -46,6 +46,7 @@ func (s *Server) DelProduction(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	log.Printf("%v", req)
 	if ok := mysql.DelProduction(req.ProductionId); !ok {
 		Response.Msg = config.ERROR_MSG
 		return
