@@ -216,3 +216,11 @@ func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 	log.Printf("%v", list)
 	return list, true
 }
+
+func DelTeamMember(id int64) (bool) {
+	if err := db.Where("id = ?", id).Delete(&TeamMembers{}).Error; err != nil {
+		log.Printf("delTeamMember query err: [%v]", err)
+		return false
+	}
+	return true
+}

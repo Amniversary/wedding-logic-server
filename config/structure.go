@@ -210,3 +210,7 @@ type GetMessageList struct {
 	Status int64  `json:"status"`
 	Type   int64  `json:"type"`
 }
+
+type DelTeamMember struct {
+	ID int64 `json:"id"`
+}
