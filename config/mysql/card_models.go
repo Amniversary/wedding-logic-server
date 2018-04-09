@@ -118,7 +118,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 				log.Printf("create clickProduction err: [%v] ", err)
 				return false
 			}
-			err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1", )).Error
+			err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1")).Error
 			if err != nil {
 				tx.Rollback()
 				log.Printf("udpate Production like err : [%v] ", err)
