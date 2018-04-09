@@ -141,7 +141,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 		return true
 	}
 	tx := db.Begin()
-	if err := tx.Model(&ClickProduction{}).Update("status", req.Status).Error; err != nil {
+	if err := tx.Model(&ClickProduction{}).Where("user_id = ? and production_id = ?", req.UserId, req.ProductionId).Update("status", req.Status).Error; err != nil {
 		log.Printf("update click Production err : [%v], [ProductionId: %d, status: %d]", err, req.ProductionId, req.Status)
 		tx.Rollback()
 		return false
