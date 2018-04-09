@@ -161,7 +161,7 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 			tx.Rollback()
 			return false
 		}
-		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`lick` + 1")).Error
+		err = tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("like", gorm.Expr("`like` + 1")).Error
 	}
 	if err != nil {
 		log.Printf("update card Production like err : [%v], [ProductionId: %d]", err, req.ProductionId)
