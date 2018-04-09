@@ -48,7 +48,7 @@ func NewTeamProduction(req *TeamProduction) bool {
 }
 
 func DelTeamProduction(productionId int64) bool {
-	if err := db.Model(&TeamProduction{}).Where("id = ?", productionId).Update("status = 0").Error; err != nil {
+	if err := db.Model(&TeamProduction{}).Where("id = ?", productionId).Update("status", 0).Error; err != nil {
 		log.Printf("delTeamProduction query err: [%v]", err)
 		return false
 	}
