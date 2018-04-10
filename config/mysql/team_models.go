@@ -39,9 +39,7 @@ func NewTeam(req *config.NewTeam) bool {
 
 func GetTeamInfo(teamId int64) (*Team, bool) {
 	team := &Team{}
-	if err := db.Where("id = ?", teamId).
-		Select("`id`, `name`, `pic`, `cover`, `explain`, `create_at`").
-		First(&team).Error; err != nil {
+	if err := db.Where("id = ?", teamId).First(&team).Error; err != nil {
 		log.Printf("getTeamInfo query err: [%v]", err)
 		return nil, false
 	}
