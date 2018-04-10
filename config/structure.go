@@ -223,6 +223,6 @@ type GetQrcode struct {
 }
 
 type GenWeddingCardReq struct {
-	ActionName string `json:"action_name"`
-	Data       interface{}
+	ActionName string      `json:"action_name"`
+	Data       interface{} `json:"data"`
 }
