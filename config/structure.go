@@ -219,7 +219,7 @@ type DelTeamMember struct {
 }
 
 type GetQrcode struct {
-	CardId int64 `json:"card_id"`
+	CardId int64 `json:"cardId"`
 }
 
 type GenWeddingCardReq struct {
