@@ -183,6 +183,8 @@ type SearchTeamList struct {
 	ID       int64  `json:"id"`
 	Name     string `json:"name"`
 	Pic      string `json:"pic"`
+	Province string `json:"province"`
+	City     string `json:"city"`
 	CreateAt int64  `json:"create_at"`
 }
 
