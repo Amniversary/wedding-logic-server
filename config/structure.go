@@ -145,9 +145,11 @@ type NewCooperationInfo struct {
 }
 
 type NewTeam struct {
-	UserId int64  `json:"userId"`
-	Pic    string `json:"pic"`
-	Name   string `json:"name"`
+	UserId   int64  `json:"userId"`
+	Pic      string `json:"pic"`
+	Name     string `json:"name"`
+	Province string `json:"province"`
+	City     string `json:"city"`
 }
 
 type GetTeamInfo struct {
@@ -222,5 +224,5 @@ type GetQrcode struct {
 
 type GenWeddingCardReq struct {
 	ActionName string `json:"action_name"`
-	Data interface{}
+	Data       interface{}
 }

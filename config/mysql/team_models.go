@@ -15,7 +15,14 @@ const (
 )
 
 func NewTeam(req *config.NewTeam) bool {
-	team := &Team{UserId: req.UserId, Name: req.Name, Pic: req.Pic, CreateAt: time.Now().Unix()}
+	team := &Team{
+		UserId:   req.UserId,
+		Name:     req.Name,
+		Pic:      req.Pic,
+		Province: req.Province,
+		City:     req.City,
+		CreateAt: time.Now().Unix(),
+	}
 	tx := db.Begin()
 	if err := tx.Create(&team).Error; err != nil {
 		log.Printf("create team model err : [%v]", err)
@@ -139,11 +146,11 @@ func SearchTeamModel(req *config.SearchTeam) ([]config.SearchTeamList, bool) {
 	switch req.Type {
 	case SearchCity:
 		err = db.Table("Team").
-			Select("id, name, pic, create_at").
+			Select("id, name, pic, city, province, create_at").
 			Where("city = ?", req.Name).Find(&list).Error
 	case SearchTeam:
 		err = db.Table("Team").
-			Select("id, name, pic, create_at").
+			Select("id, name, pic, city, province,create_at").
 			Where("name like ?", req.Name+"%").Find(&list).Error
 	}
 	if err != nil {
