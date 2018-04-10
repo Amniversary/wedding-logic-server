@@ -138,6 +138,11 @@ type Team struct {
 	UserId   int64  `gorm:"not null;default:0;type:int;index" json:"user_id"`
 	Pic      string `gorm:"not null;default:'';type:varchar(256)" json:"pic"`
 	Name     string `gorm:"not null;default:'';type:varchar(128);index" json:"name"`
+	Province string `gorm:"not null;default:'';type:varchar(128)" json:"province"`
+	City     string `gorm:"not null;default:'';type:varchar(128);index" json:"city"`
+	Phone    string `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
+	Wechat   string `gorm:"not null;default:'';type:varchar(512)" json:"wechat"`
+	Public   string `gorm:"not null;default:'';type:varchar(512)" json:"public"`
 	Cover    string `gorm:"not null;default:'';type:varchar(512)" json:"cover"`
 	Explain  string `gorm:"not null;default:'';type:varchar(512)" json:"explain"`
 	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`

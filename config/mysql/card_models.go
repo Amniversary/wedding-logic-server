@@ -14,17 +14,17 @@ const (
 	CLICK_LIKE  = 1
 )
 
-func CreateCard(card *Card) (error) {
+func CreateCard(card *Card) (int64, error) {
 	card.UpdateAt = time.Now().Unix()
 	card.CreateAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
 		log.Printf("Create Card Model error: %v", err)
-		return err
+		return 0, err
 	}
 	if card.ID == 0 {
-		return fmt.Errorf("save card info res Id empty.")
+		return 0, fmt.Errorf("save card info res Id empty.")
 	}
-	return nil
+	return card.ID, nil
 }
 
 func UpdateCardModel(card *Card) bool {

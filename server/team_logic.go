@@ -192,7 +192,7 @@ func (s *Server) SearchTeam(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	list, ok := mysql.SearchTeamModel(req.Name)
+	list, ok := mysql.SearchTeamModel(req)
 	if !ok {
 		Response.Msg = config.ERROR_MSG
 		return

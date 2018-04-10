@@ -27,16 +27,17 @@ func (s *Server) AddCard(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	if err := mysql.CreateCard(card); err != nil {
+	cardId, err := mysql.CreateCard(card)
+	if err != nil {
 		log.Printf("create card err: [%v]", err)
 		return
 	}
-	//ok, err := SendGenCardQrcode(cardId)
-	//if !ok {
-	//	log.Printf("sendGenCard request err: %v", err)
-	//	Response.Msg = config.ERROR_MSG
-	//	return
-	//}
+	ok, err := components.SendGenCardQrcode(cardId)
+	if !ok {
+		log.Printf("sendGenCard request err: %v", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
 	Response.Code = config.RESPONSE_OK
 }
 
@@ -189,11 +190,12 @@ func (s *Server) CheckValidateCode(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 消息列表
  */
 func (s *Server) GetMessageList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()

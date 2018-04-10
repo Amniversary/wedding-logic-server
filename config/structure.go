@@ -174,6 +174,7 @@ type GetTeamProduction struct {
 
 type SearchTeam struct {
 	Name string `json:"name"`
+	Type int64  `json:"type"`
 }
 
 type SearchTeamList struct {
@@ -213,4 +214,13 @@ type GetMessageList struct {
 
 type DelTeamMember struct {
 	ID int64 `json:"id"`
+}
+
+type GetQrcode struct {
+	CardId int64 `json:"card_id"`
+}
+
+type GenWeddingCardReq struct {
+	ActionName string `json:"action_name"`
+	Data interface{}
 }

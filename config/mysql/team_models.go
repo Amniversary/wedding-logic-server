@@ -10,8 +10,9 @@ import (
 
 const (
 	JoinSuccess = 1
+	SearchCity  = 1
+	SearchTeam  = 2
 )
-
 
 func NewTeam(req *config.NewTeam) bool {
 	team := &Team{UserId: req.UserId, Name: req.Name, Pic: req.Pic, CreateAt: time.Now().Unix()}
@@ -20,7 +21,7 @@ func NewTeam(req *config.NewTeam) bool {
 		log.Printf("create team model err : [%v]", err)
 		return false
 	}
-	teamMember := &TeamMembers{TeamId: team.ID, UserId: req.UserId, CreateAt:time.Now().Unix(), Type: 1}
+	teamMember := &TeamMembers{TeamId: team.ID, UserId: req.UserId, CreateAt: time.Now().Unix(), Type: 1}
 	if err := tx.Create(&teamMember).Error; err != nil {
 		log.Printf("create team members err : [%v]", err)
 		return false
@@ -41,7 +42,7 @@ func GetTeamInfo(teamId int64) (*Team, bool) {
 }
 
 func UpTeamInfo(req *Team) bool {
-	req.CreateAt = time.Now().Unix()
+	//req.CreateAt = time.Now().Unix()
 	if err := db.Table("Team").Where("id = ?", req.ID).Update(&req).Error; err != nil {
 		log.Printf("upTeam query err : [%v]", err)
 		return false
@@ -132,11 +133,19 @@ func GetTeamProductionList(req *config.GetTeamProduction) ([]config.ProductionLi
 	return list, true
 }
 
-func SearchTeamModel(name string) ([]config.SearchTeamList, bool) {
+func SearchTeamModel(req *config.SearchTeam) ([]config.SearchTeamList, bool) {
 	var list []config.SearchTeamList
-	err := db.Table("Team").
-		Select("id, name, pic, create_at").
-		Where("name like ?", name+"%").Find(&list).Error
+	var err error
+	switch req.Type {
+	case SearchCity:
+		err = db.Table("Team").
+			Select("id, name, pic, create_at").
+			Where("city = ?", req.Name).Find(&list).Error
+	case SearchTeam:
+		err = db.Table("Team").
+			Select("id, name, pic, create_at").
+			Where("name like ?", req.Name+"%").Find(&list).Error
+	}
 	if err != nil {
 		log.Printf("searchTeamModel query err: [%v]", err)
 		return nil, false
@@ -193,7 +202,7 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 		return false
 	}
 	if req.Status == JoinSuccess {
-		teamMember := &TeamMembers{TeamId:apply.TeamId, UserId:apply.UserId, Type:2, CreateAt:time.Now().Unix()}
+		teamMember := &TeamMembers{TeamId: apply.TeamId, UserId: apply.UserId, Type: 2, CreateAt: time.Now().Unix()}
 		if err := tx.Create(&teamMember).Error; err != nil {
 			log.Printf("create teamMembers err : [%v]", err)
 			return false
