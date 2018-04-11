@@ -125,12 +125,12 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 func GetTeamProductionList(req *config.GetTeamProduction) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("TeamProduction tp").
-		Select("tp.id, content, pic, `like`, create_at, ifnull(cp.status, 0) as is_click").
+		Select("tp.id, content, pic, `like`, tp.create_at, ifnull(cp.status, 0) as is_click").
 		Joins("left join TeamClickProduction cp on tp.id=cp.production_id and user_id = ?", req.UserId).
-		Where("tp.team_id = ? and cd.status = 1", req.TeamId).
+		Where("tp.team_id = ? and cp.status = 1", req.TeamId).
 		Offset((req.PageNo - 1) * req.PageSize).
 		Limit(req.PageSize).
-		Order("cd.create_at desc").Find(&list).Error
+		Order("tp.create_at desc").Find(&list).Error
 	if err != nil {
 		log.Printf("select [GetProductionList] err: %v", err)
 		return nil, false
