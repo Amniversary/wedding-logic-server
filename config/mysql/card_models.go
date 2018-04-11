@@ -38,7 +38,10 @@ func UpdateCardModel(card *Card) bool {
 
 func GetUserCardInfo(userId int64, cardId int64) (*config.GetCardInfoRes, error) {
 	card := &config.GetCardInfoRes{}
-	if err := db.Table("Card").Where("id = ?", cardId).Find(&card).Error; err != nil {
+	if err := db.Table("Card c").
+		Joins("left join TeamMembers tm on c.user_id = tm.user_id").
+		Select("c.id, c.user_id, name, phone, pic, qrcode, bg_pic, professional, company, site, `explain`, fame, `like`, production, ifnull(tm.team_id, 0) as team_id, ifnull(tm.type, 0) as identity").
+		Where("c.id = ?", cardId).Find(&card).Error; err != nil {
 		log.Printf("select [MyCardInfo] err: %v", err)
 		return nil, err
 	}
