@@ -178,12 +178,18 @@ func ProductionClickLike(req *config.ProductionClickLike) bool {
 	return true
 }
 
-func DelProduction(productionId int64) bool {
-	log.Printf("productionId: [%v]", productionId)
-	if err := db.Model(&Production{}).Where("id = ?", productionId).Update("status", 0).Error; err != nil {
+func DelProduction(req *config.DelProduction) bool {
+	log.Printf("productionId: [%v], cardId: [%v]", req.ProductionId, req.CardId)
+	tx := db.Begin()
+	if err := tx.Model(&Production{}).Where("id = ?", req.ProductionId).Update("status", 0).Error; err != nil {
 		log.Printf("update Production status err : [%v]", err)
 		return false
 	}
+	if err := tx.Model(&Card{}).Where("id = ?", req.CardId).Update("production", gorm.Expr("production - 1")).Error; err != nil {
+		log.Printf("update Card production err : [%v]", err)
+		return false
+	}
+	tx.Commit()
 	return true
 }
 

@@ -42,6 +42,7 @@ type ProductionClickLike struct {
 }
 
 type DelProduction struct {
+	CardId int64  `json:"cardId"`
 	ProductionId int64 `json:"productionId"`
 }
 
@@ -203,6 +204,7 @@ type UpJoinStatus struct {
 type GetTeamList struct {
 	ID           int64  `json:"id"`
 	UserId       int64  `json:"user_id"`
+	CardId       int64  `json:"card_id"`
 	Name         string `json:"name"`
 	Pic          string `json:"pic"`
 	Professional string `json:"professional"`

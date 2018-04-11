@@ -319,3 +319,4 @@ func (s *Server) DelTeamMember(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+

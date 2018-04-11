@@ -219,7 +219,7 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 
 func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 	var list []config.GetTeamList
-	err := db.Select("ap.id, ap.user_id, name, pic, professional").
+	err := db.Select("ap.id, c.id as card_id, ap.user_id, name, pic ,professional").
 		Table("ApplyList ap").
 		Joins("inner join Card c on ap.user_id = c.user_id").
 		Where("team_id = ? and status = 1", teamId).Find(&list).Error
