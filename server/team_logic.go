@@ -339,3 +339,30 @@ func (s *Server)  InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+/**
+	TODO: 获取团队档期列表
+ */
+func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetTeamScheduleList{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("teamScheduleList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if req.TeamId == 0 || req.Time == "" || req.TimeFrame == "" {
+		Response.Msg = "params can not be empty."
+		log.Printf("%v: [%v]", Response.Msg , req)
+		return
+	}
+	list, ok := mysql.GetTeamScheduleList(req)
+	if !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}

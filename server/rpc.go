@@ -88,6 +88,7 @@ func (s *Server) initMap() {
 		"getMessageList":          s.GetMessageList,
 		"delTeamMember":           s.DelTeamMember,
 		"invitationJoinTeam":      s.InvitationJoinTeam,
+		"getTeamScheduleList":     s.TeamScheduleList,
 	}
 	s.methodMap = MethodMap
 }

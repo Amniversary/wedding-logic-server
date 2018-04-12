@@ -223,7 +223,7 @@ func InvitationJoinTeam(req *config.GetApplyInfo) bool {
 		log.Printf("invitation Query err: [%v]", err)
 	}
 	if teamMember.ID == 0 {
-		member := &TeamMembers{TeamId:req.TeamId, UserId:req.UserId, Type:2, CreateAt:time.Now().Unix()}
+		member := &TeamMembers{TeamId: req.TeamId, UserId: req.UserId, Type: 2, CreateAt: time.Now().Unix()}
 		if err := db.Create(&member).Error; err != nil {
 			log.Printf("create join Team err: [%v]", err)
 			return false
@@ -252,4 +252,19 @@ func DelTeamMember(id int64) (bool) {
 		return false
 	}
 	return true
+}
+
+func GetTeamScheduleList(req *config.GetTeamScheduleList) ([]config.GetTeamScheduleRes, bool) {
+	var list []config.GetTeamScheduleRes
+	err := db.Select("s.id, c.user_id, c.name, c.pic, s.time_frame").
+		Table("TeamMembers tm").
+		Joins("left join `Schedule` s on tm.user_id = s.user_id").
+		Joins("left join Card c on tm.user_id = c.user_id").
+		Where("team_id = ? and `time` = ? and time_frame = ? and pay_status = 1", req.TeamId, req.Time, req.TimeFrame).Find(&list).Error
+	if err != nil {
+		log.Printf("getTeamScheduleList query err: [%v]", err)
+		return nil, false
+	}
+	return list, true
+
 }

@@ -231,3 +231,17 @@ type GenWeddingCardReq struct {
 	ActionName string      `json:"action_name"`
 	Data       interface{} `json:"data"`
 }
+
+type GetTeamScheduleList struct {
+	TeamId    int64  `json:"teamId"`
+	Time      string `json:"time"`
+	TimeFrame string `json:"timeFrame"`
+}
+
+type GetTeamScheduleRes struct {
+	Id        int64  `json:"id"`
+	UserId    int64  `json:"user_id"`
+	Name      string `json:"name"`
+	Pic       string `json:"pic"`
+	TimeFrame string `json:"time_frame"`
+}
