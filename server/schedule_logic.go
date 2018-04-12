@@ -71,7 +71,7 @@ func (s *Server) GetUserScheduleList(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	list, ok := mysql.GetUserScheduleList(req.UserId)
+	list, ok := mysql.GetUserScheduleList(req)
 	if !ok {
 		Response.Msg = config.ERROR_MSG
 		return

@@ -217,6 +217,21 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 	return true
 }
 
+func InvitationJoinTeam(req *config.GetApplyInfo) bool {
+	teamMember := &TeamMembers{}
+	if err := db.Where("team_id = ? and user_id = ?", req.TeamId, req.UserId).First(&teamMember).Error; err != nil {
+		log.Printf("invitation Query err: [%v]", err)
+	}
+	if teamMember.ID == 0 {
+		member := &TeamMembers{TeamId:req.TeamId, UserId:req.UserId, Type:2, CreateAt:time.Now().Unix()}
+		if err := db.Create(&member).Error; err != nil {
+			log.Printf("create join Team err: [%v]", err)
+			return false
+		}
+	}
+	return true
+}
+
 func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 	var list []config.GetTeamList
 	err := db.Select("ap.id, c.id as card_id, ap.user_id, name, pic ,professional").

@@ -319,4 +319,23 @@ func (s *Server) DelTeamMember(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
-
+/**
+	TODO: 邀请加入团队
+ */
+func (s *Server)  InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetApplyInfo{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("invitationJoinTeam json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if ok := mysql.InvitationJoinTeam(req); !ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}

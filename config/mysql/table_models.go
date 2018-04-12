@@ -96,17 +96,17 @@ func (SmsMessage) TableName() string {
 
 type Schedule struct {
 	ID         int64   `gorm:"primary_key" json:"id"`
-	UserId     int64   `gorm:"not null;default:0;type:int" json:"user_id"`
+	UserId     int64   `gorm:"not null;default:0;type:int; index" json:"user_id"`
 	Theme      string  `gorm:"not null;default:'';type:varchar(128)" json:"theme"`
 	Phone      string  `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
 	Site       string  `gorm:"not null;default:'';type:varchar(128)" json:"site"`
-	Time       string  `gorm:"not null;default:'';type:varchar(128)" json:"time"`
+	Time       string  `gorm:"not null;default:'';type:varchar(128); index" json:"time"`
 	Remind     string  `gorm:"not null;default:'';type:varchar(128)" json:"remind"`
 	TimeFrame  string  `gorm:"not null;default:'';type:varchar(128)" json:"time_frame"`
 	HavePay    float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"have_pay"`
 	TotalPrice float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"total_money"`
 	PayStatus  int64   `gorm:"not null;default:0;type:int" json:"pay_status"`
-	Status     int64   `gorm:"not null;default:1;type:int;index" json:"status"`
+	Status     int64   `gorm:"not null;default:1;type:int; index" json:"status"`
 	CreateAt   int64   `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 

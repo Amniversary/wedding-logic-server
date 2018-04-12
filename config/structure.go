@@ -42,7 +42,7 @@ type ProductionClickLike struct {
 }
 
 type DelProduction struct {
-	CardId int64  `json:"cardId"`
+	CardId       int64 `json:"cardId"`
 	ProductionId int64 `json:"productionId"`
 }
 
@@ -109,7 +109,8 @@ type NewCooperation struct {
 }
 
 type GetUserScheduleList struct {
-	UserId int64 `json:"userId"`
+	UserId int64  `json:"userId"`
+	Time   string `json:"time"`
 }
 
 type GetUserScheduleListRes struct {
