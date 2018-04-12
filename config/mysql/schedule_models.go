@@ -110,7 +110,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 	schedule := &config.GetScheduleInfoRes{}
 	var newSchedule []config.NewCooperationInfo
 	err := db.Table("Schedule").
-		Select("id, theme, phone, site, time_frame, have_pay, total_price, status, remind").
+		Select("id, theme, phone, site, `time`, time_frame, have_pay, total_price, status, remind").
 		Where("id = ? and status = 1", scheduleId).First(&schedule).Error
 	if err != nil {
 		log.Printf("getScheduleInfo query err : [%v]", err)
