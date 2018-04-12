@@ -75,7 +75,7 @@ func (s *Server) initMap() {
 		"newTeam":                 s.NewTeam,
 		"getTeamInfo":             s.GetTeamInfo,
 		"upTeam":                  s.UpTeam,
-		"delSchedult":             s.DelSchedule,
+		"delSchedule":             s.DelSchedule,
 		"newTeamProduction":       s.NewTeamProduction,
 		"delTeamProduction":       s.DelTeamProduction,
 		"getTeamProductionList":   s.GetTeamProductionList,
