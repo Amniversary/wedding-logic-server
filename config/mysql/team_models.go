@@ -14,7 +14,7 @@ const (
 	SearchTeam  = 2
 )
 
-func NewTeam(req *config.NewTeam) bool {
+func NewTeam(req *config.NewTeam) (*Team, bool) {
 	team := &Team{
 		UserId:   req.UserId,
 		Name:     req.Name,
@@ -26,15 +26,15 @@ func NewTeam(req *config.NewTeam) bool {
 	tx := db.Begin()
 	if err := tx.Create(&team).Error; err != nil {
 		log.Printf("create team model err : [%v]", err)
-		return false
+		return nil, false
 	}
 	teamMember := &TeamMembers{TeamId: team.ID, UserId: req.UserId, CreateAt: time.Now().Unix(), Type: 1}
 	if err := tx.Create(&teamMember).Error; err != nil {
 		log.Printf("create team members err : [%v]", err)
-		return false
+		return nil, false
 	}
 	tx.Commit()
-	return true
+	return team, true
 }
 
 func GetTeamInfo(teamId int64) (*Team, bool) {

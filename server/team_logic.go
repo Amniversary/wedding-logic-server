@@ -31,10 +31,12 @@ func (s *Server) NewTeam(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = "团队名称不能为空"
 		return
 	}
-	if ok := mysql.NewTeam(req); !ok {
+	team, ok := mysql.NewTeam(req)
+	if !ok {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	Response.Data = team
 	Response.Code = config.RESPONSE_OK
 }
 

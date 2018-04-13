@@ -97,6 +97,7 @@ func (SmsMessage) TableName() string {
 type Schedule struct {
 	ID         int64   `gorm:"primary_key" json:"id"`
 	UserId     int64   `gorm:"not null;default:0;type:int; index" json:"user_id"`
+	WeddingId  int64   `gorm:"not null;default:0;type:int; " json:"wedding_id"`
 	Theme      string  `gorm:"not null;default:'';type:varchar(128)" json:"theme"`
 	Phone      string  `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
 	Site       string  `gorm:"not null;default:'';type:varchar(128)" json:"site"`
@@ -120,6 +121,7 @@ func (Schedule) TableName() string {
 type Cooperation struct {
 	ID           int64  `gorm:"primary_key" json:"id"`
 	ScheduleId   int64  `gorm:"not null;default:0;type:int;index" json:"schedule_id"`
+	UserId       int64  `gorm:"not null;default:0;type:int" json:"user_id"`
 	Professional string `gorm:"not null;default:'';type:varchar(128)" json:"professional"`
 	Name         string `gorm:"not null;default:'';type:varchar(128)" json:"name"`
 	Phone        string `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
