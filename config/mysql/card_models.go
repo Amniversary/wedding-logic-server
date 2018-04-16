@@ -252,11 +252,24 @@ func GetMessageList(userId int64) ([]config.GetMessageList, bool) {
 	return list, true
 }
 
-func GetCardInfo (userId int64) (*Card, bool) {
+func GetCardInfo(userId int64) (*Card, bool) {
 	card := &Card{}
 	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
 		log.Printf("getCardInfo query first err: [%v]", err)
 		return nil, false
 	}
 	return card, true
+}
+
+func GetBusinessBgList(req *config.GetBusinessBgList) ([]CardCoverBackground, bool) {
+	var list []CardCoverBackground
+	err := db.Table("CardCoverBackground").
+		Select("id, text, pic, create_at").
+		Offset((req.PageNo - 1) * req.PageSize).
+		Limit(req.PageSize).Find(&list).Error
+	if err != nil {
+		log.Printf("getBusinessBgList models err: [%v]", err)
+		return nil, false
+	}
+	return list, true
 }

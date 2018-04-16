@@ -262,3 +262,8 @@ type NewBusinessCardReq struct {
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 }
+
+type GetBusinessBgList struct {
+	PageNo   int64 `json:"pageNo"`
+	PageSize int64 `json:"pageSize"`
+}

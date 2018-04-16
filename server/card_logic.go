@@ -256,3 +256,42 @@ func (s *Server) NewBusinessCard(w http.ResponseWriter, r *http.Request) {
 	Response.Data = res.Msg
 	Response.Code = config.RESPONSE_OK
 }
+
+/**
+	TODO: 获取个性名片文字列表
+ */
+func (s *Server) GetBusinessText(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	var list = []string{
+		"将来的你，一定会感谢现在拼命的自己",
+		"你可以迷茫，但请你不要虚度",
+		"这一路走来，说不上多辛苦，庆幸自己很清楚",
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 获取名片背景图列表
+ */
+func (s *Server) GetBusinessBgList(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetBusinessBgList{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getBusinessBgList json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	list, Ok := mysql.GetBusinessBgList(req)
+	if !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Data = list
+	Response.Code = config.RESPONSE_OK
+}

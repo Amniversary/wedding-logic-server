@@ -90,6 +90,8 @@ func (s *Server) initMap() {
 		"invitationJoinTeam":      s.InvitationJoinTeam,
 		"getTeamScheduleList":     s.TeamScheduleList,
 		"newBusinessCard":         s.NewBusinessCard,
+		"getBusinessText":		   s.GetBusinessText,
+		"getBusinessBgList":       s.GetBusinessBgList,
 	}
 	s.methodMap = MethodMap
 }
