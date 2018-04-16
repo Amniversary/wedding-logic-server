@@ -267,3 +267,8 @@ type GetBusinessBgList struct {
 	PageNo   int64 `json:"pageNo"`
 	PageSize int64 `json:"pageSize"`
 }
+
+type InvitationSchedule struct {
+	ScheduleId int64 `json:"scheduleId"`
+	UserId     int64 `json:"userId"`
+}

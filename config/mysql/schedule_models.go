@@ -20,7 +20,12 @@ func NewSchedule(req *config.NewSchedule) bool {
 		TotalPrice: req.TotalPrice,
 		PayStatus:  req.PayStatus,
 		Status:     1,
-		CreateAt:  time.Now().Unix(),
+		CreateAt:   time.Now().Unix(),
+	}
+	card := &Card{}
+	if err := db.Where("user_id = ?", req.UserId).First(&card).Error; err != nil {
+		log.Printf("query err: [%v]", err)
+		return false
 	}
 	tx := db.Begin()
 	if err := tx.Create(&schedule).Error; err != nil {
@@ -35,7 +40,7 @@ func NewSchedule(req *config.NewSchedule) bool {
 				Professional: v.Professional,
 				Name:         v.Name,
 				Phone:        v.Phone,
-				CreateAt:    time.Now().Unix(),
+				CreateAt:     time.Now().Unix(),
 			}).Error
 			if err != nil {
 				tx.Rollback()
@@ -43,6 +48,18 @@ func NewSchedule(req *config.NewSchedule) bool {
 				return false
 			}
 		}
+	}
+	err := tx.Create(&Cooperation{
+		ScheduleId:   schedule.ID,
+		UserId:       card.UserId,
+		Professional: card.Professional,
+		Name:         card.Name,
+		Phone:        card.Phone,
+		CreateAt:     time.Now().Unix(),
+	}).Error
+	if err != nil {
+		log.Printf("create2 cooperation err: [%v]", err)
+		return false
 	}
 	tx.Commit()
 	return true
@@ -80,7 +97,7 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 				Professional: v.Professional,
 				Name:         v.Name,
 				Phone:        v.Phone,
-				CreateAt:    time.Now().Unix(),
+				CreateAt:     time.Now().Unix(),
 			}).Error
 			if err != nil {
 				tx.Rollback()
@@ -93,12 +110,11 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 	return true
 }
 
-
 func GetUserScheduleList(req *config.GetUserScheduleList) ([]config.GetUserScheduleListRes, bool) {
 	var list []config.GetUserScheduleListRes
-	err := db.Table("Schedule").
+	err := db.Table("Schedule s").Joins("inner join Cooperation c on s.id=c.schedule_id").
 		Select("id, theme, time_frame, create_at").
-		Where("user_id = ? and `time` like ? and status = 1", req.UserId, req.Time + "%").Find(&list).Error
+		Where("user_id = ? and `time` like ? and status = 1", req.UserId, req.Time+"%").Find(&list).Error
 	if err != nil {
 		log.Printf("getUserScheduleList err : [%v]", err)
 		return nil, false
@@ -132,6 +148,34 @@ func DelSchedule(scheduleId int64) bool {
 	if err != nil {
 		log.Printf("delSchedule query err : [%v]", err)
 		return false
+	}
+	return true
+}
+
+func InvitationSchedule(req *config.InvitationSchedule) bool {
+	cooperation := &Cooperation{}
+	if err := db.Where("schedule_id = ? and user_id = ?", req.ScheduleId, req.UserId).First(&cooperation).Error; err != nil {
+		log.Printf("invitationSchedule query err: [%v]", err)
+		return false
+	}
+	if cooperation.ID == 0 {
+		card := &Card{}
+		if err := db.Where("user_id = ?", req.UserId).First(&card).Error; err != nil {
+			log.Printf("query first err: [%v]", err)
+			return false
+		}
+		newCooper := &Cooperation{
+			ScheduleId:   req.ScheduleId,
+			UserId:       card.UserId,
+			Professional: card.Professional,
+			Name:         card.Name,
+			Phone:        card.Phone,
+			CreateAt:     time.Now().Unix(),
+		}
+		if err := db.Create(&newCooper).Error; err != nil {
+			log.Printf("invitationSchedule create err: [%v]", err)
+			return false
+		}
 	}
 	return true
 }

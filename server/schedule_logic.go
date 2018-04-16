@@ -124,3 +124,24 @@ func (s *Server) DelSchedule(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
+/**
+	TODO: 邀请档期成员
+ */
+func (s *Server) InvitationSchedule(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{ Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.InvitationSchedule{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("invitationSchedule json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if Ok := mysql.InvitationSchedule(req); !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}
