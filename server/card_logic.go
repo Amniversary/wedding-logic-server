@@ -213,3 +213,46 @@ func (s *Server) GetMessageList(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
+/**
+	TODO: 创建个性名片图
+ */
+func (s *Server) NewBusinessCard(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.NewBusinessCard{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("newBusinessCard json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if req.UserId == 0 || req.PicId == 0 {
+		Response.Msg = "params can not be empty."
+		log.Printf("%v: [%v]", Response.Msg, req)
+		return
+	}
+	info, Ok := mysql.GetCardInfo(req.UserId)
+	if !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	data := &config.NewBusinessCardReq{
+		PicId:        req.PicId,
+		Cover:        req.Cover,
+		Text:         req.Text,
+		Pic:          info.Pic,
+		Qrcode:       info.Qrcode,
+		Professional: info.Professional,
+		Name:         info.Name,
+	}
+	res, Ok := components.GetNewBusinessCard(data)
+	if !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	log.Printf("%v", res)
+	Response.Data = res.Msg
+	Response.Code = config.RESPONSE_OK
+}

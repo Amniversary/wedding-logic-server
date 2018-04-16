@@ -219,3 +219,14 @@ type TeamMembers struct {
 func (TeamMembers) TableName() string {
 	return "TeamMembers"
 }
+
+type CardCoverBackground struct {
+	ID       int64  `gorm:"primary_key" json:"id"`
+	Text     string `gorm:"not null;default:'';type:varchar(128)" json:"text"`
+	Pic      string `gorm:"not null;default:'';type:varchar(512)" json:"pic"`
+	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
+}
+
+func (CardCoverBackground) TableName() string {
+	return "CardCoverBackground"
+}

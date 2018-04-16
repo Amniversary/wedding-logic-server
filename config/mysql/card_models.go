@@ -251,3 +251,12 @@ func GetMessageList(userId int64) ([]config.GetMessageList, bool) {
 	}
 	return list, true
 }
+
+func GetCardInfo (userId int64) (*Card, bool) {
+	card := &Card{}
+	if err := db.Where("user_id = ?", userId).First(&card).Error; err != nil {
+		log.Printf("getCardInfo query first err: [%v]", err)
+		return nil, false
+	}
+	return card, true
+}

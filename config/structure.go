@@ -227,7 +227,7 @@ type GetQrcode struct {
 	CardId int64 `json:"cardId"`
 }
 
-type GenWeddingCardReq struct {
+type RequestJson struct {
 	ActionName string      `json:"action_name"`
 	Data       interface{} `json:"data"`
 }
@@ -244,4 +244,21 @@ type GetTeamScheduleRes struct {
 	Name      string `json:"name"`
 	Pic       string `json:"pic"`
 	TimeFrame string `json:"time_frame"`
+}
+
+type NewBusinessCard struct {
+	UserId int64  `json:"userId"`
+	PicId  int64  `json:"picId"`
+	Cover  string `json:"cover"`
+	Text   string `json:"text"`
+}
+
+type NewBusinessCardReq struct {
+	PicId        int64  `json:"picId"`
+	Cover        string `json:"cover"`
+	Pic          string `json:"pic"`
+	Qrcode       string `json:"qrcode"`
+	Text         string `json:"text"`
+	Professional string `json:"professional"`
+	Name         string `json:"name"`
 }

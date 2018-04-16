@@ -40,6 +40,6 @@ func initTable() {
 		new(Card), new(Collection), new(Production), new(ClickProduction),
 		new(SmsMessage), new(Schedule), new(Cooperation), new(Team),
 		new(TeamProduction), new(TeamClickProduction), new(ApplyList),
-		new(TeamMembers),
+		new(TeamMembers), new(CardCoverBackground),
 	)
 }

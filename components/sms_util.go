@@ -67,7 +67,7 @@ func SendGenCardQrcode(cardId int64) (bool, error) {
 	Url := "http://172.17.16.11:5607/api/response.do"
 	client := http.Client{}
 	data := &config.GetQrcode{CardId: cardId}
-	request := &config.GenWeddingCardReq{
+	request := &config.RequestJson{
 		ActionName: "save_qrcode",
 		Data:       data,
 	}
@@ -103,4 +103,44 @@ func SendGenCardQrcode(cardId int64) (bool, error) {
 		return false, fmt.Errorf("wedding card service genCard error.")
 	}
 	return true, nil
+}
+
+func GetNewBusinessCard(data *config.NewBusinessCardReq) (*config.Response, bool) {
+	Url := "http://www.wedding.cn/api/response.do" //http://www.wedding.cn/api/response.do http://172.17.16.11:5607/api/response.do
+	client := http.Client{}
+	request := &config.RequestJson{
+		ActionName: "new_business_card",
+		Data:       data,
+	}
+	reqBytes, err := json.Marshal(request)
+	if err != nil {
+		log.Printf("newBusinessCard json encode err: [%v]", err)
+		return nil, false
+	}
+	req, err := http.NewRequest("POST", Url, bytes.NewBuffer(reqBytes))
+	if err != nil {
+		log.Printf("http new request err: [%v]", err)
+		return nil, false
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("http do request err: [%v]", err)
+		return nil, false
+	}
+	defer resp.Body.Close()
+	rspBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("ioutil realAll err: [%v]", err)
+		return nil, false
+	}
+	response := &config.Response{}
+	if err := json.Unmarshal(rspBody, response); err != nil {
+		log.Printf("json decode err: [%v]", err)
+		return nil, false
+	}
+	if response.Code != config.RESPONSE_OK {
+		log.Printf("wedding card server is err: [%v], responseCode: [%v], errMsg: [%v]", request, response.Code, response.Msg)
+		return nil, false
+	}
+	return response, true
 }
