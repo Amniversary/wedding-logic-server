@@ -219,15 +219,16 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 
 func InvitationJoinTeam(req *config.GetApplyInfo) bool {
 	teamMember := &TeamMembers{}
-	if err := db.Where("team_id = ? and user_id = ?", req.TeamId, req.UserId).First(&teamMember).Error; err != nil {
+	if err := db.Where("user_id = ?", req.TeamId, req.UserId).First(&teamMember).Error; err != nil {
 		log.Printf("invitation Query err: [%v]", err)
 	}
-	if teamMember.ID == 0 {
-		member := &TeamMembers{TeamId: req.TeamId, UserId: req.UserId, Type: 2, CreateAt: time.Now().Unix()}
-		if err := db.Create(&member).Error; err != nil {
-			log.Printf("create join Team err: [%v]", err)
-			return false
-		}
+	if teamMember.ID != 0 {
+		return false
+	}
+	member := &TeamMembers{TeamId: req.TeamId, UserId: req.UserId, Type: 2, CreateAt: time.Now().Unix()}
+	if err := db.Create(&member).Error; err != nil {
+		log.Printf("create join Team err: [%v]", err)
+		return false
 	}
 	return true
 }
@@ -235,9 +236,9 @@ func InvitationJoinTeam(req *config.GetApplyInfo) bool {
 func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 	var list []config.GetTeamList
 	err := db.Select("ap.id, c.id as card_id, ap.user_id, name, pic ,professional").
-		Table("ApplyList ap").
+		Table("TeamMembers ap").
 		Joins("inner join Card c on ap.user_id = c.user_id").
-		Where("team_id = ? and status = 1", teamId).Find(&list).Error
+		Where("team_id = ?", teamId).Find(&list).Error
 	if err != nil {
 		log.Printf("getTeamList query err : [%v]", err)
 		return nil, false

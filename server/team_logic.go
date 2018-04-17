@@ -336,7 +336,7 @@ func (s *Server)  InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if ok := mysql.InvitationJoinTeam(req); !ok {
-		Response.Msg = config.ERROR_MSG
+		Response.Msg = "加入失败, 已加入其他团队"
 		return
 	}
 	Response.Code = config.RESPONSE_OK
