@@ -113,8 +113,8 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 func GetUserScheduleList(req *config.GetUserScheduleList) ([]config.GetUserScheduleListRes, bool) {
 	var list []config.GetUserScheduleListRes
 	err := db.Table("Schedule s").Joins("inner join Cooperation c on s.id=c.schedule_id").
-		Select("s.id, theme, time_frame, create_at").
-		Where("user_id = ? and `time` like ? and status = 1", req.UserId, req.Time+"%").Find(&list).Error
+		Select("s.id, theme, time_frame, s.create_at").
+		Where("c.user_id = ? and `time` like ? and status = 1", req.UserId, req.Time+"%").Find(&list).Error
 	if err != nil {
 		log.Printf("getUserScheduleList err : [%v]", err)
 		return nil, false
