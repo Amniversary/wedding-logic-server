@@ -94,6 +94,7 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 		for _, v := range req.Cooperation {
 			err := tx.Create(&Cooperation{
 				ScheduleId:   schedule.ID,
+				UserId:       v.UserId,
 				Professional: v.Professional,
 				Name:         v.Name,
 				Phone:        v.Phone,
@@ -133,7 +134,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 		return nil, false
 	}
 	err = db.Table("Cooperation").
-		Select("id, professional, name, phone, create_at").
+		Select("id, user_id, professional, name, phone, create_at").
 		Where("schedule_id = ?", scheduleId).Find(&newSchedule).Error
 	if err != nil {
 		log.Printf("select Cooperation query err: [%v]", err)

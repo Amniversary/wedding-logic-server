@@ -103,6 +103,7 @@ type UpSchedule struct {
 }
 
 type NewCooperation struct {
+	UserId       int64  `json:"userId"`
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
@@ -140,6 +141,7 @@ type GetScheduleInfoRes struct {
 
 type NewCooperationInfo struct {
 	ID           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
