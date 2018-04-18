@@ -106,7 +106,7 @@ func SendGenCardQrcode(cardId int64) (bool, error) {
 }
 
 func GetNewBusinessCard(data *config.NewBusinessCardReq) (*config.Response, bool) {
-	Url := "http://www.wedding.cn/api/response.do" //http://www.wedding.cn/api/response.do http://172.17.16.11:5607/api/response.do
+	Url := "http://172.17.16.11:5607/api/response.do" //http://www.wedding.cn/api/response.do http://172.17.16.11:5607/api/response.do
 	client := http.Client{}
 	request := &config.RequestJson{
 		ActionName: "new_business_card",
