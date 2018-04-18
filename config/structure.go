@@ -118,7 +118,7 @@ type GetUserScheduleListRes struct {
 	ID        int64  `json:"id"`
 	Theme     string `json:"theme"`
 	TimeFrame string `json:"time_frame"`
-	CreateAt  int64  `json:"create_at"`
+	Time      string `json:"time"`
 }
 
 type GetScheduleInfo struct {
