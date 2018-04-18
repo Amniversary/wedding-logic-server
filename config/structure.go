@@ -103,7 +103,7 @@ type UpSchedule struct {
 }
 
 type NewCooperation struct {
-	UserId       int64  `json:"userId"`
+	UserId       int64  `json:"user_id"`
 	Professional string `json:"professional"`
 	Name         string `json:"name"`
 	Phone        string `json:"phone"`
