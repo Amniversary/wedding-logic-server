@@ -50,6 +50,7 @@ func (s *Server) UpSchedule(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s", Response.Msg)
 		return
 	}
+	log.Printf("%v", req)
 	if ok := mysql.UpdateSchedule(req); !ok {
 		Response.Msg = config.ERROR_MSG
 		return
@@ -94,6 +95,7 @@ func (s *Server) GetScheduleInfo(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+
 	info, err := mysql.GetScheduleInfo(req.ScheduleId)
 	if !err {
 		Response.Msg = config.ERROR_MSG
