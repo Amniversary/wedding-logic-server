@@ -30,8 +30,8 @@ func openDb(c *config.Config) {
 	}
 
 	db = db1
-	db.DB().SetMaxIdleConns(50)
-	db.DB().SetMaxOpenConns(80)
+	db.DB().SetMaxIdleConns(0)
+	//db.DB().SetMaxOpenConns(80)
 	initTable()
 }
 
@@ -40,6 +40,6 @@ func initTable() {
 		new(Card), new(Collection), new(Production), new(ClickProduction),
 		new(SmsMessage), new(Schedule), new(Cooperation), new(Team),
 		new(TeamProduction), new(TeamClickProduction), new(ApplyList),
-		new(TeamMembers), new(CardCoverBackground),
+		new(TeamMembers), new(CardCoverBackground), new(AuthorizeWedding),
 	)
 }

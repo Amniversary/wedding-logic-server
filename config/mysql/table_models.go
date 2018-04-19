@@ -216,6 +216,9 @@ type TeamMembers struct {
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
+/**
+	TODO: 团队列表
+ */
 func (TeamMembers) TableName() string {
 	return "TeamMembers"
 }
@@ -227,6 +230,23 @@ type CardCoverBackground struct {
 	CreateAt int64  `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
+/**
+	TODO: 名片背景图
+ */
 func (CardCoverBackground) TableName() string {
 	return "CardCoverBackground"
+}
+
+type AuthorizeWedding struct {
+	ID         int64 `gorm:"primary_key" json:"id"`
+	ScheduleId int64 `gorm:"not null; default:0; type:int; index" json:"schedule_id"`
+	WeddingId  int64 `gorm:"not null; default:0; type:int; index" json:"wedding_id"`
+	UserId     int64 `gorm:"not null; default:0; type:int; index" json:"user_id"`
+	CreateAt   int64 `gorm:"not null; default:0; type:int" json:"create_at"`
+}
+/**
+	TODO: 授权用户列表
+ */
+func (AuthorizeWedding) TableName() string {
+	return "AuthorizeWedding"
 }

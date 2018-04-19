@@ -15,6 +15,7 @@ const (
 )
 
 func CreateCard(card *Card) (int64, error) {
+	if card
 	card.UpdateAt = time.Now().Unix()
 	card.CreateAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
