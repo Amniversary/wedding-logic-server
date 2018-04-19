@@ -181,6 +181,6 @@ func InvitationSchedule(req *config.InvitationSchedule) bool {
 	return true
 }
 
-func AuthWedding(req *config.AuthWedding) {
+//func AuthWedding(req *config.AuthWedding) {
 
-}
+//}
