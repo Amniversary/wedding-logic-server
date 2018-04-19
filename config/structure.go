@@ -116,6 +116,7 @@ type GetUserScheduleList struct {
 
 type GetUserScheduleListRes struct {
 	ID        int64  `json:"id"`
+	WeddingId int64  `json:"wedding_id"`
 	Theme     string `json:"theme"`
 	TimeFrame string `json:"time_frame"`
 	Time      string `json:"time"`
