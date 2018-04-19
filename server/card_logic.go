@@ -27,6 +27,11 @@ func (s *Server) AddCard(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	if card.UserId == 0 {
+		Response.Msg = "params can not be empty."
+		log.Printf("%v: [%v]", Response.Msg, card)
+		return
+	}
 	cardId, err := mysql.CreateCard(card)
 	if err != nil {
 		log.Printf("create card err: [%v]", err)

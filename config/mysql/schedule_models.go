@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Amniversary/wedding-logic-server/config"
+	"fmt"
 )
 
 func NewSchedule(req *config.NewSchedule) bool {
@@ -127,7 +128,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 	schedule := &config.GetScheduleInfoRes{}
 	var newSchedule []config.NewCooperationInfo
 	err := db.Table("Schedule").
-		Select("id, theme, phone, site, `time`, time_frame, have_pay, total_price, pay_status as status, remind").
+		Select("id, wedding_id, theme, phone, site, `time`, time_frame, have_pay, total_price, pay_status as status, remind").
 		Where("id = ? and status = 1", scheduleId).First(&schedule).Error
 	if err != nil {
 		log.Printf("getScheduleInfo query err : [%v]", err)
@@ -181,6 +182,58 @@ func InvitationSchedule(req *config.InvitationSchedule) bool {
 	return true
 }
 
-//func AuthWedding(req *config.AuthWedding) {
+func AuthWedding(req *config.AuthWedding) (bool, error){
+	schedule := &Schedule{}
+	if err := db.Where("id = ?", req.ScheduleId).First(&schedule).Error; err != nil {
+		log.Printf("getBindAuthwedding query err: [%v]", err)
+		return false, nil
+	}
+	if schedule.WeddingId == 0 {
+		err := db.Table("Schedule").Where("id = ?", req.ScheduleId).Update("wedding_id", req.WeddingId).Error
+		if err != nil {
+			log.Printf("update schedule weddingId err: [%v]", err)
+			return false, nil
+		}
+	}
+	if schedule.WeddingId != req.WeddingId {
+		return false, fmt.Errorf("已授权其他婚礼, 授权失败")
+	}
+	auth := &AuthorizeWedding{}
+	db.Where("wedding_id = ? and schedule_id = ? and user_id = ?",
+		req.WeddingId,
+		req.ScheduleId,
+		req.UserId).First(&auth)
+	if auth.ID == 0 {
+		newModel := &AuthorizeWedding{
+			WeddingId:  req.WeddingId,
+			ScheduleId: req.ScheduleId,
+			UserId:     req.UserId,
+			CreateAt:   time.Now().Unix(),
+		}
+		if err := db.Create(&newModel).Error; err != nil {
+			log.Printf("create authwedding err : [%v]", err)
+			return false, nil
+		}
+	}
+	return true, nil
+}
 
-//}
+func CancelAuthWedding(req *config.AuthWedding) bool {
+	auth := &AuthorizeWedding{}
+	db.Where("wedding_id = ? and schedule_id = ? and user_id = ?",
+		req.WeddingId,
+		req.ScheduleId,
+		req.UserId).First(&auth)
+	if auth.ID == 0 {
+		return true
+	}
+	err := db.Where("wedding_id = ? and schedule_id = ? and user_id = ?",
+		req.WeddingId,
+		req.ScheduleId,
+		req.UserId).Delete(&auth).Error
+	if err != nil {
+		log.Printf("cancel authwedding err: [%v]", err)
+		return false
+	}
+	return true
+}

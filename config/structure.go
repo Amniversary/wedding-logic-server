@@ -127,6 +127,7 @@ type GetScheduleInfo struct {
 
 type GetScheduleInfoRes struct {
 	ID          int64                `json:"id"`
+	WeddingId   int64                `json:"wedding_id"`
 	Theme       string               `json:"theme"`
 	TimeFrame   string               `json:"time_frame"`
 	Site        string               `json:"site"`
@@ -273,4 +274,11 @@ type GetBusinessBgList struct {
 type InvitationSchedule struct {
 	ScheduleId int64 `json:"scheduleId"`
 	UserId     int64 `json:"userId"`
+}
+
+type AuthWedding struct {
+	ScheduleId int64 `json:"scheduleId"`
+	UserId     int64 `json:"userId"`
+	WeddingId  int64 `json:"weddingId"`
+	Type       int64 `json:"type"`
 }

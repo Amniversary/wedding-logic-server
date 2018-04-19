@@ -9,6 +9,11 @@ import (
 	"github.com/Amniversary/wedding-logic-server/config"
 )
 
+const (
+	Authorize       = 1
+	CancelAuthorize = 2
+)
+
 /**
 	TODO: 创建档期
  */
@@ -131,7 +136,7 @@ func (s *Server) DelSchedule(w http.ResponseWriter, r *http.Request) {
 	TODO: 邀请档期成员
  */
 func (s *Server) InvitationSchedule(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{ Code: config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -147,3 +152,43 @@ func (s *Server) InvitationSchedule(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
+/**
+	TODO: 授权婚礼
+ */
+func (s *Server) AuthorizeWedding(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.AuthWedding{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("authorizeWedding json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if req.UserId == 0 || req.ScheduleId == 0 || req.WeddingId == 0 || req.Type == 0 {
+		Response.Msg = "params can not be empty."
+		log.Printf("%v: [%v]", Response.Msg, Response)
+		return
+	}
+	switch req.Type {
+	case Authorize:
+		if Ok, err := mysql.AuthWedding(req); !Ok {
+			if err != nil {
+				Response.Msg = "已授权其他婚礼, 授权失败"
+				log.Printf("%v", err)
+				return 
+			}
+			Response.Msg = config.ERROR_MSG
+			return
+		}
+	case CancelAuthorize:
+		if Ok := mysql.CancelAuthWedding(req); !Ok {
+			Response.Msg = config.ERROR_MSG
+			return
+		}
+	}
+	Response.Code = config.RESPONSE_OK
+}
+
