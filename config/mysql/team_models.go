@@ -257,7 +257,7 @@ func DelTeamMember(id int64) (bool) {
 
 func GetTeamScheduleList(req *config.GetTeamScheduleList) ([]config.GetTeamScheduleRes, bool) {
 	var list []config.GetTeamScheduleRes
-	err := db.Select("s.id, c.card_id, c.user_id, c.name, c.pic, s.time_frame").
+	err := db.Select("s.id, c.id as card_id, c.user_id, c.name, c.pic, s.time_frame").
 		Table("TeamMembers tm").
 		Joins("left join `Schedule` s on tm.user_id = s.user_id").
 		Joins("left join Card c on tm.user_id = c.user_id").
