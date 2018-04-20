@@ -158,7 +158,7 @@ func InvitationSchedule(req *config.InvitationSchedule) bool {
 	cooperation := &Cooperation{}
 	if err := db.Where("schedule_id = ? and user_id = ?", req.ScheduleId, req.UserId).First(&cooperation).Error; err != nil {
 		log.Printf("invitationSchedule query err: [%v]", err)
-		return false
+		//return false
 	}
 	if cooperation.ID == 0 {
 		card := &Card{}
