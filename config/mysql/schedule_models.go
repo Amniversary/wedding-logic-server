@@ -21,6 +21,8 @@ func NewSchedule(req *config.NewSchedule) bool {
 		TotalPrice: req.TotalPrice,
 		PayStatus:  req.PayStatus,
 		Status:     1,
+		Longitude:  req.Longitude,
+		Latitude:   req.Latitude,
 		CreateAt:   time.Now().Unix(),
 	}
 	card := &Card{}
@@ -79,6 +81,8 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 		PayStatus:  req.PayStatus,
 		Status:     req.Status,
 		Phone:      req.Phone,
+		Longitude:  req.Longitude,
+		Latitude:   req.Latitude,
 	}
 	tx := db.Begin()
 	if err := tx.Table("Schedule").Where("id = ?", req.ID).Updates(&schedule).Error; err != nil {
@@ -128,7 +132,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 	schedule := &config.GetScheduleInfoRes{}
 	var newSchedule []config.NewCooperationInfo
 	err := db.Table("Schedule").
-		Select("id, wedding_id, theme, phone, site, `time`, time_frame, have_pay, total_price, pay_status as status, remind").
+		Select("id, wedding_id, theme, phone, site, `time`, time_frame, have_pay, total_price, pay_status as status, remind, longitude, latitude").
 		Where("id = ? and status = 1", scheduleId).First(&schedule).Error
 	if err != nil {
 		log.Printf("getScheduleInfo query err : [%v]", err)
@@ -182,7 +186,7 @@ func InvitationSchedule(req *config.InvitationSchedule) bool {
 	return true
 }
 
-func AuthWedding(req *config.AuthWedding) (bool, error){
+func AuthWedding(req *config.AuthWedding) (bool, error) {
 	schedule := &Schedule{}
 	if err := db.Where("id = ?", req.ScheduleId).First(&schedule).Error; err != nil {
 		log.Printf("getBindAuthwedding query err: [%v]", err)

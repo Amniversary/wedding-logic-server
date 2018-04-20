@@ -84,6 +84,8 @@ type NewSchedule struct {
 	TotalPrice  float64          `json:"total_price"`
 	PayStatus   int64            `json:"pay_status"`
 	Phone       string           `json:"phone"`
+	Longitude   float64          `json:"longitude"`
+	Latitude    float64          `json:"latitude"`
 	Cooperation []NewCooperation `json:"cooperation"`
 }
 
@@ -99,6 +101,8 @@ type UpSchedule struct {
 	PayStatus   int64            `json:"pay_status"`
 	Status      int64            `json:"status"`
 	Phone       string           `json:"phone"`
+	Longitude   float64          `json:"longitude"`
+	Latitude    float64          `json:"latitude"`
 	Cooperation []NewCooperation `json:"cooperation"`
 }
 
@@ -138,6 +142,8 @@ type GetScheduleInfoRes struct {
 	TotalPrice  float64              `json:"total_price"`
 	Status      int64                `json:"status"`
 	Phone       string               `json:"phone"`
+	Longitude   float64              `json:"longitude"`
+	Latitude    float64              `json:"latitude"`
 	Cooperation []NewCooperationInfo `json:"cooperation"`
 }
 

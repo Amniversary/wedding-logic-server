@@ -108,6 +108,8 @@ type Schedule struct {
 	TotalPrice float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"total_money"`
 	PayStatus  int64   `gorm:"not null;default:0;type:int" json:"pay_status"`
 	Status     int64   `gorm:"not null;default:1;type:int; index" json:"status"`
+	Longitude  float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"longitude"`
+	Latitude   float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"latitude"`
 	CreateAt   int64   `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 
@@ -244,6 +246,7 @@ type AuthorizeWedding struct {
 	UserId     int64 `gorm:"not null; default:0; type:int; index" json:"user_id"`
 	CreateAt   int64 `gorm:"not null; default:0; type:int" json:"create_at"`
 }
+
 /**
 	TODO: 授权用户列表
  */
