@@ -99,10 +99,11 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 func CreateProduction(production *Production) bool {
 	production.CreateAt = time.Now().Unix()
 	info := &config.CardTeamMemberInfo{}
-	err := db.Table("Card c").
+	err := db.Where("c.id = ?", production.CardId).
+		Table("Card c").
 		Joins("left join TeamMembers t on c.user_id=t.user_id").
 		Select("c.id, c.user_id, `name`, ifnull(team_id, 0) as team_id").
-		Where("c.id = ?", production.CardId).First(&info).Error
+		Find(&info).Error
 	if err != nil {
 		log.Printf("query cardTeamMemberInfo err: [%v]", err)
 		return false
