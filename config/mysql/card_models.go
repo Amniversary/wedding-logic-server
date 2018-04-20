@@ -98,17 +98,41 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 
 func CreateProduction(production *Production) bool {
 	production.CreateAt = time.Now().Unix()
+	info := &config.CardTeamMemberInfo{}
+	err := db.Table("Card c").
+		Joins("left join TeamMembers t on c.user_id=t.user_id").
+		Select("c.id, c.user_id, `name`, ifnull(team_id, 0) as team_id").
+		Where("c.id = ?", production.CardId).First(&info).Error
+	if err != nil {
+		log.Printf("query cardTeamMemberInfo err: [%v]", err)
+		return false
+	}
 	tx := db.Begin()
 	if err := tx.Create(&production).Error; err != nil {
 		log.Printf("create dynamic model err : %v", err)
 		tx.Rollback()
 		return false
 	}
-	err := tx.Table("Card").Where("id = ?", production.CardId).Update("production", gorm.Expr("production + 1")).Error
+	err = tx.Table("Card").Where("id = ?", production.CardId).Update("production", gorm.Expr("production + 1")).Error
 	if err != nil {
 		log.Printf("update card production err : [%v]", err)
 		tx.Rollback()
 		return false
+	}
+	if info.TeamId != 0 {
+		team := &TeamProduction{
+			TeamId: info.TeamId,
+			CardId: production.CardId,
+			Content:production.Content,
+			Pic: production.Pic,
+			Status:1,
+			CreateAt: time.Now().Unix(),
+		}
+		if err := tx.Create(&team).Error; err != nil {
+			log.Printf("create teamProduction err: [%v]", err)
+			tx.Rollback()
+			return false
+		}
 	}
 	tx.Commit()
 	return true

@@ -165,6 +165,7 @@ func (Team) TableName() string {
 type TeamProduction struct {
 	ID       int64  `gorm:"primary_key" json:"id"`
 	TeamId   int64  `gorm:"not null;default:0;type:int;index" json:"teamId"`
+	CardId   int64  `gorm:"not null;default:0;type:int;index" json:"cardId"`
 	Content  string `gorm:"not null;default:'';type:text" json:"content"`
 	Pic      string `gorm:"not null;default:'';type:text" json:"pic"`
 	Like     int64  `gorm:"not null;default:0;type:int" json:"like"`

@@ -125,8 +125,9 @@ func ClickLikeTeamProduction(req *config.ClickTeamProduction) bool {
 func GetTeamProductionList(req *config.GetTeamProduction) ([]config.ProductionList, bool) {
 	var list []config.ProductionList
 	err := db.Table("TeamProduction tp").
-		Select("tp.id, content, pic, `like`, tp.create_at, ifnull(cp.status, 0) as is_click").
+		Select("tp.id, content, tp.pic, tp.`like`, tp.create_at, ifnull(cp.status, 0) as is_click, ifnull(tp.card_id, 0) as card_id, ifnull(c.pic, '') as pic,ifnull(`name`, '') as name, ifnull(professional, '') as professional").
 		Joins("left join TeamClickProduction cp on tp.id=cp.production_id and user_id = ?", req.UserId).
+		Joins("left join Card c on tp.card_id = c.id").
 		Where("tp.team_id = ? and tp.status = 1", req.TeamId).
 		Offset((req.PageNo - 1) * req.PageSize).
 		Limit(req.PageSize).

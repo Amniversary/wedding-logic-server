@@ -60,12 +60,16 @@ type GetProductionList struct {
 }
 
 type ProductionList struct {
-	ID       int64  `json:"id"`
-	Content  string `json:"content"`
-	Pic      string `json:"pic"`
-	Like     int64  `json:"like"`
-	IsClick  int64  `json:"is_click"`
-	CreateAt int64  `json:"create_at"`
+	ID           int64  `json:"id"`
+	CardId       int64  `json:"card_id"`
+	Picture      string `json:"picture"`
+	Name         string `json:"name"`
+	Professional string `json:"professional"`
+	Content      string `json:"content"`
+	Pic          string `json:"pic"`
+	Like         int64  `json:"like"`
+	IsClick      int64  `json:"is_click"`
+	CreateAt     int64  `json:"create_at"`
 }
 
 type CheckValidateCode struct {
@@ -289,4 +293,11 @@ type AuthWedding struct {
 	UserId     int64 `json:"userId"`
 	WeddingId  int64 `json:"weddingId"`
 	Type       int64 `json:"type"`
+}
+
+type CardTeamMemberInfo struct {
+	ID     int64  `json:"id"`
+	UserId int64  `json:"user_id"`
+	Name   string `json:"name"`
+	TeamId int64  `json:"team_id"`
 }
