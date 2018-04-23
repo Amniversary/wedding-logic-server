@@ -247,9 +247,8 @@ type RequestJson struct {
 }
 
 type GetTeamScheduleList struct {
-	TeamId    int64  `json:"teamId"`
-	Time      string `json:"time"`
-	TimeFrame string `json:"timeFrame"`
+	TeamId int64  `json:"teamId"`
+	Time   string `json:"time"`
 }
 
 type GetTeamScheduleRes struct {
@@ -261,6 +260,14 @@ type GetTeamScheduleRes struct {
 	TimeFrame string `json:"time_frame"`
 }
 
+type GetTeamSchedule struct {
+	Id        int64    `json:"id"`
+	CardId    int64    `json:"card_id"`
+	UserId    int64    `json:"user_id"`
+	Name      string   `json:"name"`
+	Pic       string   `json:"pic"`
+	TimeFrame []string `json:"time_frame"`
+}
 type NewBusinessCard struct {
 	UserId int64  `json:"userId"`
 	PicId  int64  `json:"picId"`

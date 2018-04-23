@@ -301,11 +301,12 @@ func (s *Server) GetTeamList(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 删除成员
  */
 func (s *Server) DelTeamMember(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -321,11 +322,12 @@ func (s *Server) DelTeamMember(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 邀请加入团队
  */
-func (s *Server)  InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+func (s *Server) InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -341,11 +343,12 @@ func (s *Server)  InvitationJoinTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 获取团队档期列表
  */
 func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
@@ -355,9 +358,9 @@ func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	if req.TeamId == 0 || req.Time == "" || req.TimeFrame == "" {
+	if req.TeamId == 0 || req.Time == "" {
 		Response.Msg = "params can not be empty."
-		log.Printf("%v: [%v]", Response.Msg , req)
+		log.Printf("%v: [%v]", Response.Msg, req)
 		return
 	}
 	list, ok := mysql.GetTeamScheduleList(req)
@@ -365,18 +368,38 @@ func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
+	log.Printf("%v", list)
+
+	//temp := make(map[int64]interface{})
+	//frame := make(map[int64][]string)
+	//if len(list) > 0 {
+	//	for _, v := range list {
+	//		frame[v.UserId] = append(frame[v.UserId], v.TimeFrame)
+	//		temp[v.UserId] = map[string]interface{}{
+	//			"id":         v.Id,
+	//			"user_id":    v.UserId,
+	//			"card_id":    v.CardId,
+	//			"name":       v.Name,
+	//			"pic":        v.Pic,
+	//			"time_frame": frame[v.UserId],
+	//		}
+	//	}
+	//	log.Printf("%v", temp)
+	//}
+
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+
 /**
 	TODO: 解散团队
  */
 func (s *Server) DelTeam(w http.ResponseWriter, r *http.Request) {
-	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	Response := &config.Response{Code: config.RESPONSE_ERROR}
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
-	req :=  &config.DelTeamRequest{}
+	req := &config.DelTeamRequest{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("delTeam json decode err: [%v]", err)
 		Response.Msg = config.ERROR_MSG
