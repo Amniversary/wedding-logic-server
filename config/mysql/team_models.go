@@ -268,9 +268,9 @@ func GetTeamScheduleList(req *config.GetTeamScheduleList) ([]config.GetTeamSched
 	var list []config.GetTeamScheduleRes
 	err := db.Select("s.id, c.id as card_id, c.user_id, c.name, c.pic, s.time_frame").
 		Table("TeamMembers tm").
-		Joins("left join `Schedule` s on tm.user_id = s.user_id").
+		Joins("left join `Schedule` s on tm.user_id = s.user_id and tm.status = 1").
 		Joins("left join Card c on tm.user_id = c.user_id").
-		Where("team_id = ? and `time` = ? and time_frame = ? and pay_status = 1", req.TeamId, req.Time, req.TimeFrame).Find(&list).Error
+		Where("team_id = ? and `time` = ? and pay_status = 1", req.TeamId, req.Time).Find(&list).Error
 	if err != nil {
 		log.Printf("getTeamScheduleList query err: [%v]", err)
 		return nil, false
@@ -296,7 +296,7 @@ func DelTeam(req *config.DelTeamRequest) bool {
 		return false
 	}
 	tx := db.Begin()
-	if err := tx.Table("Team").Where("id", req.TeamId).Update("status", 0).Error; err != nil {
+	if err := tx.Table("Team").Where("id = ?", req.TeamId).Update("status", 0).Error; err != nil {
 		log.Printf("del Team err: [%v]", err)
 		tx.Rollback()
 		return false
