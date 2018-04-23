@@ -368,26 +368,25 @@ func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	log.Printf("%v", list)
+	//log.Printf("%v", list)
 
-	//temp := make(map[int64]interface{})
-	//frame := make(map[int64][]string)
-	//if len(list) > 0 {
-	//	for _, v := range list {
-	//		frame[v.UserId] = append(frame[v.UserId], v.TimeFrame)
-	//		temp[v.UserId] = map[string]interface{}{
-	//			"id":         v.Id,
-	//			"user_id":    v.UserId,
-	//			"card_id":    v.CardId,
-	//			"name":       v.Name,
-	//			"pic":        v.Pic,
-	//			"time_frame": frame[v.UserId],
-	//		}
-	//	}
-	//	log.Printf("%v", temp)
-	//}
+	temp := make(map[int64]interface{})
+	frame := make(map[int64][]string)
+	if len(list) > 0 {
+		for _, v := range list {
+			frame[v.UserId] = append(frame[v.UserId], v.TimeFrame)
+			temp[v.UserId] = map[string]interface{}{
+				"user_id":    v.UserId,
+				"card_id":    v.CardId,
+				"name":       v.Name,
+				"pic":        v.Pic,
+				"time_frame": frame[v.UserId],
+			}
+		}
+		log.Printf("%v", temp)
+	}
 
-	Response.Data = list
+	Response.Data = temp
 	Response.Code = config.RESPONSE_OK
 }
 
