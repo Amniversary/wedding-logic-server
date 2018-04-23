@@ -15,6 +15,7 @@ const (
 )
 
 func NewTeam(req *config.NewTeam) (*Team, bool) {
+
 	team := &Team{
 		UserId:   req.UserId,
 		Name:     req.Name,
@@ -28,7 +29,7 @@ func NewTeam(req *config.NewTeam) (*Team, bool) {
 		log.Printf("create team model err : [%v]", err)
 		return nil, false
 	}
-	teamMember := &TeamMembers{TeamId: team.ID, UserId: req.UserId, CreateAt: time.Now().Unix(), Type: 1}
+	teamMember := &TeamMembers{TeamId: team.ID, UserId: req.UserId, CreateAt: time.Now().Unix(), Type: 1, Status: 1}
 	if err := tx.Create(&teamMember).Error; err != nil {
 		log.Printf("create team members err : [%v]", err)
 		return nil, false
@@ -146,11 +147,11 @@ func SearchTeamModel(req *config.SearchTeam) ([]config.SearchTeamList, bool) {
 	case SearchCity:
 		err = db.Table("Team").
 			Select("id, name, pic, city, province, create_at").
-			Where("city = ?", req.Name).Find(&list).Error
+			Where("city = ? and `status` = 1", req.Name).Find(&list).Error
 	case SearchTeam:
 		err = db.Table("Team").
 			Select("id, name, pic, city, province,create_at").
-			Where("name like ?", req.Name+"%").Find(&list).Error
+			Where("name like ? and `status` = 1", req.Name+"%").Find(&list).Error
 	}
 	if err != nil {
 		log.Printf("searchTeamModel query err: [%v]", err)
@@ -161,7 +162,7 @@ func SearchTeamModel(req *config.SearchTeam) ([]config.SearchTeamList, bool) {
 
 func ApplyJoin(userId int64, teamId int64) (int64) {
 	members := &TeamMembers{}
-	if err := db.Where("user_id = ?", userId).First(&members).Error; err == nil {
+	if err := db.Where("user_id = ? and status = 1", userId).First(&members).Error; err == nil {
 		if members.ID != 0 {
 			return 1 //fmt.Errorf("已加入团队, 无法申请")
 		}
@@ -208,7 +209,7 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 		return false
 	}
 	if req.Status == JoinSuccess {
-		teamMember := &TeamMembers{TeamId: apply.TeamId, UserId: apply.UserId, Type: 2, CreateAt: time.Now().Unix()}
+		teamMember := &TeamMembers{TeamId: apply.TeamId, UserId: apply.UserId, Type: 2, CreateAt: time.Now().Unix(), Status: 1}
 		if err := tx.Create(&teamMember).Error; err != nil {
 			log.Printf("create teamMembers err : [%v]", err)
 			return false
@@ -220,13 +221,20 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 
 func InvitationJoinTeam(req *config.GetApplyInfo) bool {
 	teamMember := &TeamMembers{}
-	if err := db.Where("user_id = ?", req.TeamId, req.UserId).First(&teamMember).Error; err != nil {
+	if err := db.Where("team_id = ? and user_id = ?", req.TeamId, req.UserId).First(&teamMember).Error; err != nil {
 		log.Printf("invitation Query err: [%v]", err)
 	}
 	if teamMember.ID != 0 {
-		return false
+		if teamMember.Status == 0 {
+			teamMember.Status = 1
+			if err := db.Table("TeamMembers").Where("id = ?", teamMember.ID).Update(&teamMember).Error; err != nil {
+				log.Printf("update teamMembers status err: [%v]", err)
+				return false
+			}
+		}
+		return true
 	}
-	member := &TeamMembers{TeamId: req.TeamId, UserId: req.UserId, Type: 2, CreateAt: time.Now().Unix()}
+	member := &TeamMembers{TeamId: req.TeamId, UserId: req.UserId, Type: 2, CreateAt: time.Now().Unix(), Status: 1}
 	if err := db.Create(&member).Error; err != nil {
 		log.Printf("create join Team err: [%v]", err)
 		return false
@@ -239,7 +247,7 @@ func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 	err := db.Select("ap.id, c.id as card_id, ap.user_id, name, pic ,professional").
 		Table("TeamMembers ap").
 		Joins("inner join Card c on ap.user_id = c.user_id").
-		Where("team_id = ?", teamId).Find(&list).Error
+		Where("team_id = ? and `status` = 1", teamId).Find(&list).Error
 	if err != nil {
 		log.Printf("getTeamList query err : [%v]", err)
 		return nil, false
@@ -249,7 +257,7 @@ func GetTeamList(teamId int64) ([]config.GetTeamList, bool) {
 }
 
 func DelTeamMember(id int64) (bool) {
-	if err := db.Where("id = ?", id).Delete(&TeamMembers{}).Error; err != nil {
+	if err := db.Table("TeamMembers").Where("id = ?", id).Update("status", 0).Error; err != nil {
 		log.Printf("delTeamMember query err: [%v]", err)
 		return false
 	}
@@ -269,4 +277,35 @@ func GetTeamScheduleList(req *config.GetTeamScheduleList) ([]config.GetTeamSched
 	}
 	return list, true
 
+}
+
+func DelTeam(req *config.DelTeamRequest) bool {
+	members := &TeamMembers{}
+	err := db.Where("team_id = ? and user_id = ? and status = 1",
+		req.TeamId,
+		req.UserId,
+	).First(&members).Error
+	if err != nil {
+		log.Printf("first query members err: [%v]", err)
+		return false
+	}
+	if members.ID == 0 {
+		return false
+	}
+	if members.Type != 1 {
+		return false
+	}
+	tx := db.Begin()
+	if err := tx.Table("Team").Where("id", req.TeamId).Update("status", 0).Error; err != nil {
+		log.Printf("del Team err: [%v]", err)
+		tx.Rollback()
+		return false
+	}
+	if err := tx.Table("TeamMembers").Where("team_id = ?", req.TeamId).Update("status", 0).Error; err != nil {
+		log.Printf("del TeamMembers err: [%v]", err)
+		tx.Rollback()
+		return false
+	}
+	tx.Commit()
+	return true
 }

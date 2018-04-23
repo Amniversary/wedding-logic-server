@@ -150,7 +150,7 @@ func GetScheduleInfo(scheduleId int64) (*config.GetScheduleInfoRes, bool) {
 }
 
 func DelSchedule(scheduleId int64) bool {
-	err := db.Table("Schedule").Where("id = ?", scheduleId).Update("status = 0").Error
+	err := db.Table("Schedule").Where("id = ?", scheduleId).Update("status", 0).Error
 	if err != nil {
 		log.Printf("delSchedule query err : [%v]", err)
 		return false

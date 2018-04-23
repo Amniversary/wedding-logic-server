@@ -368,3 +368,23 @@ func (s *Server) TeamScheduleList(w http.ResponseWriter, r *http.Request) {
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
 }
+/**
+	TODO: 解散团队
+ */
+func (s *Server) DelTeam(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req :=  &config.DelTeamRequest{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("delTeam json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if Ok := mysql.DelTeam(req); !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+}

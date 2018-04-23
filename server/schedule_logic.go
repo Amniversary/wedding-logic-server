@@ -172,13 +172,14 @@ func (s *Server) AuthorizeWedding(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v: [%v]", Response.Msg, Response)
 		return
 	}
+
 	switch req.Type {
 	case Authorize:
 		if Ok, err := mysql.AuthWedding(req); !Ok {
 			if err != nil {
 				Response.Msg = "已授权其他婚礼, 授权失败"
 				log.Printf("%v", err)
-				return 
+				return
 			}
 			Response.Msg = config.ERROR_MSG
 			return

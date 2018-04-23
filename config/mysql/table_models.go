@@ -150,6 +150,7 @@ type Team struct {
 	Public    string  `gorm:"not null;default:'';type:varchar(512)" json:"public"`
 	Cover     string  `gorm:"not null;default:'';type:varchar(512)" json:"cover"`
 	Explain   string  `gorm:"not null;default:'';type:varchar(512)" json:"explain"`
+	Status    int64   `gorm:"not null;default:0;type:int;index" json:"status"`
 	Longitude float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"longitude"`
 	Latitude  float64 `gorm:"not null;default:0;type:decimal(10,7)" json:"latitude"`
 	CreateAt  int64   `gorm:"not null;default:0;type:int" json:"create_at"`
@@ -215,7 +216,8 @@ type TeamMembers struct {
 	ID       int64 `gorm:"primary_key" json:"id"`
 	TeamId   int64 `gorm:"not null;default:0;type:int;index" json:"team_id"`
 	UserId   int64 `gorm:"not null;default:0;type:int;index" json:"user_id"`
-	Type     int64 `gorm:"not null;default:0;type:int;" json:"type"`
+	Type     int64 `gorm:"not null;default:0;type:int" json:"type"`
+	Status   int64 `gorm:"not null;default:0;type:int;index" json:"status"`
 	CreateAt int64 `gorm:"not null;default:0;type:int" json:"create_at"`
 }
 

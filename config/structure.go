@@ -301,3 +301,8 @@ type CardTeamMemberInfo struct {
 	Name   string `json:"name"`
 	TeamId int64  `json:"team_id"`
 }
+
+type DelTeamRequest struct {
+	TeamId int64 `json:"teamId"`
+	UserId int64 `json:"userId"`
+}

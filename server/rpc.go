@@ -94,6 +94,7 @@ func (s *Server) initMap() {
 		"getBusinessBgList":       s.GetBusinessBgList,
 		"invitationSchedule":      s.InvitationSchedule,
 		"authorizeWedding":        s.AuthorizeWedding,
+		"delTeam":                 s.DelTeam,
 	}
 	s.methodMap = MethodMap
 }
