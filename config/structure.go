@@ -252,7 +252,6 @@ type GetTeamScheduleList struct {
 }
 
 type GetTeamScheduleRes struct {
-	Id        int64  `json:"id"`
 	CardId    int64  `json:"card_id"`
 	UserId    int64  `json:"user_id"`
 	Name      string `json:"name"`
