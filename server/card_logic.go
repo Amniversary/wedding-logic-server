@@ -11,6 +11,7 @@ import (
 	"github.com/Amniversary/wedding-logic-server/config"
 	"github.com/Amniversary/wedding-logic-server/config/mysql"
 	"github.com/Amniversary/wedding-logic-server/components"
+	"strconv"
 )
 
 /**
@@ -299,4 +300,37 @@ func (s *Server) GetBusinessBgList(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Data = list
 	Response.Code = config.RESPONSE_OK
+}
+/**
+	TODO: 收集用户推送码
+ */
+func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	req := &config.GetToken{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("getToken json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if len(req.Data) <= Empty {
+		Response.Msg = "params can not be empty."
+		log.Printf("%v", Response.Msg)
+		return
+	}
+	headerUserId := r.Header.Get("userId")
+	userId, err := strconv.ParseInt(headerUserId, 10, 64)
+	if err != nil {
+		log.Printf("header userId parseInt err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if userId == Empty {
+		Response.Msg = "header userId cannot be empty."
+		log.Printf("%v: [%v]", Response.Msg, userId)
+		return
+	}
+	mysql.SaveToken(req.Data)
 }

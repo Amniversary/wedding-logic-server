@@ -12,6 +12,7 @@ import (
 const (
 	CANCEL_LIKE = 0
 	CLICK_LIKE  = 1
+	SQL_SaveToken = "insert into `NoticeToken` (`user_id`, `token`, `status`, `create_at`) values (%d, %s, %d, %d);"
 )
 
 func CreateCard(card *Card) (int64, error) {
@@ -298,4 +299,8 @@ func GetBusinessBgList(req *config.GetBusinessBgList) ([]CardCoverBackground, bo
 		return nil, false
 	}
 	return list, true
+}
+
+func SaveToken(data []config.FromData) {
+
 }

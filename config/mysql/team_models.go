@@ -269,7 +269,7 @@ func GetTeamScheduleList(req *config.GetTeamScheduleList) ([]config.GetTeamSched
 	var list []config.GetTeamScheduleRes
 	err := db.Select("c.id as card_id, c.user_id, c.name, c.pic, ifnull(s.time_frame,'') as time_frame").
 		Table("TeamMembers tm").
-		Joins("left join `Schedule` s on tm.user_id = s.user_id and s.`time` = ? and pay_status = 1", req.Time).
+		Joins("left join `Schedule` s on tm.user_id = s.user_id and s.`time` = ? and s.status = 1", req.Time).
 		Joins("left join Card c on tm.user_id = c.user_id").
 		Where("team_id = ? and tm.status = 1", req.TeamId).Find(&list).Error
 	if err != nil {

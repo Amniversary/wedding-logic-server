@@ -10,12 +10,6 @@ import (
 	"github.com/Amniversary/wedding-logic-server/config"
 )
 
-const (
-	ServerName = "FindWedding"
-)
-
-type MethodFunc func(w http.ResponseWriter, r *http.Request)
-
 func (s *Server) rpc(w http.ResponseWriter, r *http.Request) {
 	res := &config.Response{Code: config.RESPONSE_OK}
 	if r.Method != "POST" {
@@ -37,7 +31,7 @@ func (s *Server) rpc(w http.ResponseWriter, r *http.Request) {
 	}()
 	methodExc, ok := s.methodMap[methodName]
 	if !ok {
-		res.Code = 1
+		res.Code = config.RESPONSE_ERROR
 		res.Msg = fmt.Sprintf("Can't find the interface: [%s]", methodName)
 		EchoJson(w, http.StatusOK, res)
 		return
