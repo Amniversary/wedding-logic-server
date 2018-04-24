@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	CANCEL_LIKE = 0
-	CLICK_LIKE  = 1
-	SQL_SaveToken = "insert into `NoticeToken` (`user_id`, `token`, `status`, `create_at`) values (%d, %s, %d, %d);"
+	CANCEL_LIKE   = 0
+	CLICK_LIKE    = 1
+	SQL_SaveToken = "insert into `NoticeToken` (`user_id`, `token`, `status`, `expire`) values (%d, '%s', %d, %d);"
 )
 
 func CreateCard(card *Card) (int64, error) {
@@ -123,11 +123,11 @@ func CreateProduction(production *Production) bool {
 	}
 	if info.TeamId != 0 {
 		team := &TeamProduction{
-			TeamId: info.TeamId,
-			CardId: production.CardId,
-			Content:production.Content,
-			Pic: production.Pic,
-			Status:1,
+			TeamId:   info.TeamId,
+			CardId:   production.CardId,
+			Content:  production.Content,
+			Pic:      production.Pic,
+			Status:   1,
 			CreateAt: time.Now().Unix(),
 		}
 		if err := tx.Create(&team).Error; err != nil {
@@ -301,6 +301,21 @@ func GetBusinessBgList(req *config.GetBusinessBgList) ([]CardCoverBackground, bo
 	return list, true
 }
 
-func SaveToken(data []config.FromData) {
-
+func SaveToken(userId int64, data []config.FromData) bool {
+	var count int64
+	err := db.Model(&NoticeToken{}).Where("user_id = ? and status = 1", userId).Count(&count).Error
+	if err != nil {
+		log.Printf("count query first err: [%v]", err)
+		return false
+	}
+	if count > 10 {
+		return true
+	}
+	for _, v := range data {
+		err = db.Exec(fmt.Sprintf(SQL_SaveToken, userId, v.FromId, 1, v.Expire)).Error
+		if err != nil {
+			log.Printf("insert tokenList err: [%v] [%v]", err, fmt.Sprintf(SQL_SaveToken, userId, v.FromId, 1, v.Expire))
+		}
+	}
+	return true
 }

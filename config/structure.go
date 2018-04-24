@@ -220,6 +220,7 @@ type GetTeamList struct {
 	ID           int64  `json:"id"`
 	UserId       int64  `json:"user_id"`
 	CardId       int64  `json:"card_id"`
+	Identity     int64  `json:"identity"`
 	Name         string `json:"name"`
 	Pic          string `json:"pic"`
 	Professional string `json:"professional"`

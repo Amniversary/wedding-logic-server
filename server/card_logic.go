@@ -321,6 +321,11 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	headerUserId := r.Header.Get("userId")
+	if headerUserId == "" {
+		Response.Msg = "header userId params can not be empty."
+		log.Printf("%v", Response.Msg)
+		return
+	}
 	userId, err := strconv.ParseInt(headerUserId, 10, 64)
 	if err != nil {
 		log.Printf("header userId parseInt err: [%v]", err)
@@ -332,5 +337,9 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v: [%v]", Response.Msg, userId)
 		return
 	}
-	mysql.SaveToken(req.Data)
+	if Ok := mysql.SaveToken(userId, req.Data); !Ok {
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	Response.Code = config.RESPONSE_OK
 }

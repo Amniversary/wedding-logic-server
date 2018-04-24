@@ -262,7 +262,7 @@ type NoticeToken struct {
 	UserId   int64  `gorm:"not null; default:0; type:int; index" json:"user_id"`
 	Token    string `gorm:"not null; default:''; type:varchar(512)" json:"token"`
 	Status   int64  `gorm:"not null; default:0; type:int" json:"status"`
-	CreateAt int64  `gorm:"not null; default:0; type:int" json:"create_at"`
+	Expire	 int64  `gorm:"not null; default:0; type:int" json:"expire"`
 }
 
 /**
