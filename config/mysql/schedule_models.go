@@ -199,7 +199,7 @@ func AuthWedding(req *config.AuthWedding) (bool, error) {
 			return false, nil
 		}
 	}
-	if schedule.WeddingId != req.WeddingId {
+	if schedule.WeddingId != 0 && schedule.WeddingId != req.WeddingId {
 		return false, fmt.Errorf("已授权其他婚礼, 授权失败")
 	}
 	auth := &AuthorizeWedding{}
