@@ -119,7 +119,8 @@ func UpdateSchedule(req *config.UpSchedule) bool {
 func GetUserScheduleList(req *config.GetUserScheduleList) ([]config.GetUserScheduleListRes, bool) {
 	var list []config.GetUserScheduleListRes
 	err := db.Table("Schedule s").Joins("inner join Cooperation c on s.id=c.schedule_id").
-		Select("s.id, wedding_id, theme, time_frame, s.time").
+		Joins("left join AuthorizeWedding aw on s.id = aw.schedule_id").
+		Select("s.id, ifnull(aw.wedding_id, 0) as wedding_id, theme, time_frame, s.time").
 		Where("c.user_id = ? and `time` like ? and status = 1", req.UserId, req.Time+"%").Find(&list).Error
 	if err != nil {
 		log.Printf("getUserScheduleList err : [%v]", err)
@@ -192,15 +193,15 @@ func AuthWedding(req *config.AuthWedding) (bool, error) {
 		log.Printf("getBindAuthwedding query err: [%v]", err)
 		return false, nil
 	}
+	if schedule.WeddingId != 0 && schedule.WeddingId != req.WeddingId {
+		return false, fmt.Errorf("已授权其他婚礼, 授权失败")
+	}
 	if schedule.WeddingId == 0 {
 		err := db.Table("Schedule").Where("id = ?", req.ScheduleId).Update("wedding_id", req.WeddingId).Error
 		if err != nil {
 			log.Printf("update schedule weddingId err: [%v]", err)
 			return false, nil
 		}
-	}
-	if schedule.WeddingId != 0 && schedule.WeddingId != req.WeddingId {
-		return false, fmt.Errorf("已授权其他婚礼, 授权失败")
 	}
 	auth := &AuthorizeWedding{}
 	db.Where("wedding_id = ? and schedule_id = ? and user_id = ?",
