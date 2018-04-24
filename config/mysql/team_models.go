@@ -22,6 +22,7 @@ func NewTeam(req *config.NewTeam) (*Team, bool) {
 		Pic:      req.Pic,
 		Province: req.Province,
 		City:     req.City,
+		Status:   1,
 		CreateAt: time.Now().Unix(),
 	}
 	tx := db.Begin()
