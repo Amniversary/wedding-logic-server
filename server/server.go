@@ -25,7 +25,7 @@ func NewServer(cfg *config.Config) ServerBase {
 func (s *Server) init() {
 	mysql.NewMysql(s.cfg)
 	s.initMap()
-	s.initCollectMap()
+	//s.initCollectMap()
 }
 
 func (s *Server) runServer() {
