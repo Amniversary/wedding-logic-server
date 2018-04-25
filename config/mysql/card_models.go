@@ -12,7 +12,7 @@ import (
 const (
 	CANCEL_LIKE   = 0
 	CLICK_LIKE    = 1
-	SQL_SaveToken = "insert into `NoticeToken` (`user_id`, `token`, `status`, `expire`) values (%d, '%s', %d, %d);"
+	SQL_SaveToken = "insert into `NoticeToken` (`user_id`, `open_id`, `token`, `status`, `expire`, `create_at`) values (%d, '%s','%s', %d, %d, %d);"
 )
 
 func CreateCard(card *Card) (int64, error) {
@@ -309,7 +309,7 @@ func GetBusinessBgList(req *config.GetBusinessBgList) ([]CardCoverBackground, bo
 	return list, true
 }
 
-func SaveToken(userId int64, data []config.FormData) bool {
+func SaveToken(userId int64, openId string, data []config.FormData) bool {
 	var count int64
 	err := db.Model(&NoticeToken{}).Where("user_id = ? and status = 1", userId).Count(&count).Error
 	if err != nil {
@@ -320,9 +320,9 @@ func SaveToken(userId int64, data []config.FormData) bool {
 		return true
 	}
 	for _, v := range data {
-		err = db.Exec(fmt.Sprintf(SQL_SaveToken, userId, v.FormId, 1, v.Expire)).Error
+		err = db.Exec(fmt.Sprintf(SQL_SaveToken, userId, openId,  v.FormId, 1, v.Expire, time.Now().Unix())).Error
 		if err != nil {
-			log.Printf("insert tokenList err: [%v] [%v]", err, fmt.Sprintf(SQL_SaveToken, userId, v.FormId, 1, v.Expire))
+			log.Printf("insert tokenList err: [%v] [%v]", err, fmt.Sprintf(SQL_SaveToken, userId, openId, v.FormId, 1, v.Expire, time.Now().Unix()))
 		}
 	}
 	return true

@@ -315,7 +315,7 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 		Response.Msg = config.ERROR_MSG
 		return
 	}
-	if len(req.Data) <= Empty {
+	if len(req.Data) <= Empty || req.OpenId == "" {
 		Response.Msg = "params can not be empty."
 		log.Printf("%v", Response.Msg)
 		return
@@ -337,7 +337,7 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v: [%v]", Response.Msg, userId)
 		return
 	}
-	if Ok := mysql.SaveToken(userId, req.Data); !Ok {
+	if Ok := mysql.SaveToken(userId, req.OpenId, req.Data); !Ok {
 		Response.Msg = config.ERROR_MSG
 		return
 	}

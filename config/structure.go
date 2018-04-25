@@ -164,7 +164,7 @@ type NewTeam struct {
 	UserId   int64  `json:"userId"`
 	Pic      string `json:"pic"`
 	Name     string `json:"name"`
-	Phone 	 string `json:"phone"`
+	Phone    string `json:"phone"`
 	Province string `json:"province"`
 	City     string `json:"city"`
 }
@@ -316,7 +316,8 @@ type DelTeamRequest struct {
 }
 
 type GetToken struct {
-	Data []FormData `json:"data"`
+	OpenId string     `json:"openId"`
+	Data   []FormData `json:"data"`
 }
 
 type FormData struct {
