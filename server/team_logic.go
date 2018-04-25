@@ -410,3 +410,10 @@ func (s *Server) DelTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	Response.Code = config.RESPONSE_OK
 }
+
+/**
+	TODO: 转让团队创建人
+ */
+func (s *Server) TransferAdmin(w http.ResponseWriter, r *http.Request) {
+
+}
