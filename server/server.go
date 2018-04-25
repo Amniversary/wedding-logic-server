@@ -30,7 +30,6 @@ func (s *Server) init() {
 
 func (s *Server) runServer() {
 	http.HandleFunc("/rpc", s.rpc)
-	http.HandleFunc("/token", s.collect)
 	log.Printf("ListenServer Port: [%s]", s.cfg.Port)
 	http.ListenAndServe(s.cfg.Port, nil)
 }

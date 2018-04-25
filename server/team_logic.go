@@ -415,5 +415,9 @@ func (s *Server) DelTeam(w http.ResponseWriter, r *http.Request) {
 	TODO: 转让团队创建人
  */
 func (s *Server) TransferAdmin(w http.ResponseWriter, r *http.Request) {
-
+	Response := &config.Response{Code:config.RESPONSE_ERROR}
+	defer func() {
+		EchoJson(w, http.StatusOK, Response)
+	}()
+	
 }
