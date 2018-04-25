@@ -17,6 +17,14 @@ const (
 
 func CreateCard(card *Card) (int64, error) {
 	//if card
+	user := &Card{}
+	err := db.Where("user_id = ?", card.UserId).First(&user).Error
+	if err != nil {
+		log.Printf("getCard first err: [%v]", err)
+	}
+	if user.ID != 0 {
+		return user.ID, nil
+	}
 	card.UpdateAt = time.Now().Unix()
 	card.CreateAt = time.Now().Unix()
 	if err := db.Create(&card).Error; err != nil {
