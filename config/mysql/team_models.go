@@ -21,6 +21,7 @@ func NewTeam(req *config.NewTeam) (*Team, bool) {
 		Name:     req.Name,
 		Pic:      req.Pic,
 		Province: req.Province,
+		Phone:    req.Phone,
 		City:     req.City,
 		Status:   1,
 		CreateAt: time.Now().Unix(),

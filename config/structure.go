@@ -164,6 +164,7 @@ type NewTeam struct {
 	UserId   int64  `json:"userId"`
 	Pic      string `json:"pic"`
 	Name     string `json:"name"`
+	Phone 	 string `json:"phone"`
 	Province string `json:"province"`
 	City     string `json:"city"`
 }
