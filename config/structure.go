@@ -141,7 +141,7 @@ type GetScheduleInfoRes struct {
 	TimeFrame   string               `json:"time_frame"`
 	Site        string               `json:"site"`
 	Time        string               `json:"time"`
-	Remind      string               `json:"remind"`
+	Remind      int64                `json:"remind"`
 	HavePay     float64              `json:"have_pay"`
 	TotalPrice  float64              `json:"total_price"`
 	Status      int64                `json:"status"`
