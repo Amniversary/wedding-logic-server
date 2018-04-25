@@ -309,7 +309,7 @@ func GetBusinessBgList(req *config.GetBusinessBgList) ([]CardCoverBackground, bo
 	return list, true
 }
 
-func SaveToken(userId int64, data []config.FromData) bool {
+func SaveToken(userId int64, data []config.FormData) bool {
 	var count int64
 	err := db.Model(&NoticeToken{}).Where("user_id = ? and status = 1", userId).Count(&count).Error
 	if err != nil {
@@ -320,9 +320,9 @@ func SaveToken(userId int64, data []config.FromData) bool {
 		return true
 	}
 	for _, v := range data {
-		err = db.Exec(fmt.Sprintf(SQL_SaveToken, userId, v.FromId, 1, v.Expire)).Error
+		err = db.Exec(fmt.Sprintf(SQL_SaveToken, userId, v.FormId, 1, v.Expire)).Error
 		if err != nil {
-			log.Printf("insert tokenList err: [%v] [%v]", err, fmt.Sprintf(SQL_SaveToken, userId, v.FromId, 1, v.Expire))
+			log.Printf("insert tokenList err: [%v] [%v]", err, fmt.Sprintf(SQL_SaveToken, userId, v.FormId, 1, v.Expire))
 		}
 	}
 	return true

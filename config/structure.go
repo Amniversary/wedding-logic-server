@@ -315,11 +315,11 @@ type DelTeamRequest struct {
 }
 
 type GetToken struct {
-	Data []FromData `json:"data"`
+	Data []FormData `json:"data"`
 }
 
-type FromData struct {
-	FromId string `json:"fromId"`
+type FormData struct {
+	FormId string `json:"formId"`
 	Expire int64  `json:"expire"`
 }
 
