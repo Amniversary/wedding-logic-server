@@ -15,7 +15,7 @@ type Server struct {
 	cfg *config.Config
 
 	methodMap map[string]MethodFunc
-	collectMap map[string]MethodFunc
+	//collectMap map[string]MethodFunc
 }
 
 func NewServer(cfg *config.Config) ServerBase {
