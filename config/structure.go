@@ -83,7 +83,7 @@ type NewSchedule struct {
 	TimeFrame   string           `json:"time_frame"`
 	Site        string           `json:"site"`
 	Time        string           `json:"time"`
-	Remind      int64            `json:"remind"`
+	Remind      string           `json:"remind"`
 	HavePay     float64          `json:"have_pay"`
 	TotalPrice  float64          `json:"total_price"`
 	PayStatus   int64            `json:"pay_status"`
@@ -99,7 +99,7 @@ type UpSchedule struct {
 	TimeFrame   string           `json:"time_frame"`
 	Site        string           `json:"site"`
 	Time        string           `json:"time"`
-	Remind      int64            `json:"remind"`
+	Remind      string           `json:"remind"`
 	HavePay     float64          `json:"have_pay"`
 	TotalPrice  float64          `json:"total_price"`
 	PayStatus   int64            `json:"pay_status"`
@@ -141,7 +141,7 @@ type GetScheduleInfoRes struct {
 	TimeFrame   string               `json:"time_frame"`
 	Site        string               `json:"site"`
 	Time        string               `json:"time"`
-	Remind      int64                `json:"remind"`
+	Remind      string               `json:"remind"`
 	HavePay     float64              `json:"have_pay"`
 	TotalPrice  float64              `json:"total_price"`
 	Status      int64                `json:"status"`

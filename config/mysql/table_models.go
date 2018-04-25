@@ -102,7 +102,7 @@ type Schedule struct {
 	Phone      string  `gorm:"not null;default:'';type:varchar(128)" json:"phone"`
 	Site       string  `gorm:"not null;default:'';type:varchar(128)" json:"site"`
 	Time       string  `gorm:"not null;default:'';type:varchar(128); index" json:"time"`
-	Remind     int64   `gorm:"not null;default:0;type:int" json:"remind"`
+	Remind     string   `gorm:"not null;default:0;type:int" json:"remind"`
 	TimeFrame  string  `gorm:"not null;default:'';type:varchar(128)" json:"time_frame"`
 	HavePay    float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"have_pay"`
 	TotalPrice float64 `gorm:"not null;default:0;type:decimal(12,2)" json:"total_money"`
