@@ -419,5 +419,16 @@ func (s *Server) TransferAdmin(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
-	
+	req := &config.TransferAdmin{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		log.Printf("transferAdmin json decode err: [%v]", err)
+		Response.Msg = config.ERROR_MSG
+		return
+	}
+	if Ok, err := mysql.TransferAdmin(req); !Ok {
+		Response.Msg = err
+		return
+	}
+	Response.Code = config.RESPONSE_OK
+
 }

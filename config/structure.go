@@ -322,3 +322,9 @@ type FromData struct {
 	FromId string `json:"fromId"`
 	Expire int64  `json:"expire"`
 }
+
+type TransferAdmin struct {
+	TeamId  int64 `json:"teamId"`
+	AdminId int64 `json:"adminId"`
+	UserId  int64 `json:"userId"`
+}

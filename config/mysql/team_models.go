@@ -310,3 +310,34 @@ func DelTeam(req *config.DelTeamRequest) bool {
 	tx.Commit()
 	return true
 }
+
+func TransferAdmin(req *config.TransferAdmin) (bool, string) {
+	uInfo := &TeamMembers{}
+	err := db.Where("team_id = ? and user_id = ? and type = 1 and status = 1", req.TeamId, req.AdminId).First(&uInfo).Error
+	if err != nil {
+		log.Printf("uInfo team first err: [%v]", err)
+		return false, "找不到创建者信息"
+	}
+	tInfo := &TeamMembers{}
+	err = db.Where("team_id = ? and user_id = ? and status = 1", req.TeamId, req.UserId).First(&tInfo).Error
+	if err != nil {
+		log.Printf("tInfo team first err: [%v]", err)
+		return false, "找不到团队成员信息"
+	}
+
+	tx := db.Begin()
+	err = tx.Model(&TeamMembers{}).Where("team_id = ? and user_id = ? and status = 1", req.TeamId, req.AdminId).Update("type", 2).Error
+	if err != nil {
+		log.Printf("update team admin type err: [%v]", err)
+		tx.Rollback()
+		return false, "系统错误"
+	}
+	err = tx.Model(&TeamMembers{}).Where("team_id = ? and user_id = ? and status = 1", req.TeamId, req.UserId).Update("type", 1).Error
+	if err != nil {
+		log.Printf("update team user type err: [%v]", err)
+		tx.Rollback()
+		return false, "系统错误"
+	}
+	tx.Commit()
+	return true, ""
+}

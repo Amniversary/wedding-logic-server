@@ -90,6 +90,7 @@ func (s *Server) initMap() {
 		"authorizeWedding":        s.AuthorizeWedding,
 		"delTeam":                 s.DelTeam,
 		"getToken":                s.GetToken,
+		"transferAdmin":           s.TransferAdmin,
 	}
 	s.methodMap = MethodMap
 }
