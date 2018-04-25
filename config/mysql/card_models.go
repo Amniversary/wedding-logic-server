@@ -90,9 +90,9 @@ func CreateCollect(cardId int64, userId int64) (Collection, error) {
 			log.Printf("create collection error: %v", err)
 			return collect, err
 		}
-		if err := db.Model(&Card{}).Where("id = ?", cardId).Updates(map[string]interface{}{"fame": gorm.Expr("fame + 1"), "update_at": time.Now().Unix()}).Error; err != nil {
-			log.Printf("update card fame error: %v ,  cardId:[%d]", err, cardId)
-		}
+	}
+	if err := db.Model(&Card{}).Where("id = ?", cardId).Updates(map[string]interface{}{"fame": gorm.Expr("fame + 1"), "update_at": time.Now().Unix()}).Error; err != nil {
+		log.Printf("update card fame error: %v ,  cardId:[%d]", err, cardId)
 	}
 	return collect, nil
 }
