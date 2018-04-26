@@ -309,7 +309,6 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		EchoJson(w, http.StatusOK, Response)
 	}()
-	Response.Code = config.RESPONSE_OK
 	req := &config.GetToken{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		log.Printf("getToken json decode err: [%v]", err)
