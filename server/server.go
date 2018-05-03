@@ -31,7 +31,7 @@ func (s *Server) init() {
 func (s *Server) runServer() {
 	// 127.0.0.1/rpc
 	http.HandleFunc("/rpc", s.rpc)
-	//log.Printf("ListenServer Port: [%s]", s.cfg.Port)
+	log.Printf("ListenServer Port: [%s]", s.cfg.Port)
 	http.ListenAndServe(s.cfg.Port, nil)
 }
 
