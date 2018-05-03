@@ -344,3 +344,4 @@ func (s *Server) GetToken(w http.ResponseWriter, r *http.Request) {
 	Response.Code = config.RESPONSE_OK
 }
 
+

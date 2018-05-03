@@ -210,10 +210,22 @@ func UpdateJoinStatus(req *config.UpJoinStatus) (bool) {
 		log.Printf("updateJoinStatus up query err: [%v]", err)
 		return false
 	}
-	if req.Status == JoinSuccess {
-		teamMember := &TeamMembers{TeamId: apply.TeamId, UserId: apply.UserId, Type: 2, CreateAt: time.Now().Unix(), Status: 1}
-		if err := tx.Create(&teamMember).Error; err != nil {
-			log.Printf("create teamMembers err : [%v]", err)
+	userTeam := &TeamMembers{}
+	if err := db.Where("team_id = ? and user_id = ?", apply.TeamId, apply.UserId).First(&userTeam).Error; err != nil {
+		log.Printf("select user Team query err: [%v]", err)
+	}
+	if userTeam.ID == 0 {
+		if req.Status == JoinSuccess {
+			teamMember := &TeamMembers{TeamId: apply.TeamId, UserId: apply.UserId, Type: 2, CreateAt: time.Now().Unix(), Status: 1}
+			if err := tx.Create(&teamMember).Error; err != nil {
+				log.Printf("create teamMembers err : [%v]", err)
+				return false
+			}
+		}
+	} else {
+		userTeam.Status = 1
+		if err := tx.Table("TeamMembers").Where("id = ?", userTeam.ID).Update(&userTeam).Error; err != nil {
+			log.Printf("update teamMembers status err: [%v]", err)
 			return false
 		}
 	}

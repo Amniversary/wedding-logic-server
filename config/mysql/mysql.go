@@ -25,6 +25,7 @@ func openDb(c *config.Config) {
 		log.Printf("init DateBase error: [%v]", err)
 		return
 	}
+
 	if c.DBDebug {
 		db1.LogMode(true)
 	}
@@ -32,7 +33,9 @@ func openDb(c *config.Config) {
 	db = db1
 	db.DB().SetMaxIdleConns(0)
 	//db.DB().SetMaxOpenConns(80)
-	initTable()
+
+	//initTable()
+
 }
 
 func initTable() {
